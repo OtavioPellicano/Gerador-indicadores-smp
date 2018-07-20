@@ -2,6 +2,11 @@
 #define DETALHEINDICADOR_H
 
 #include <QDialog>
+#include <QStringList>
+#include <vector>
+
+
+typedef std::vector<QString> vecQStr;
 
 namespace Ui {
 class DetalheIndicador;
@@ -14,6 +19,8 @@ class DetalheIndicador : public QDialog
 public:
     explicit DetalheIndicador(QWidget *parent = 0);
     ~DetalheIndicador();
+
+    void atualizarTabelaIndice(const QString& prestadora, const QString& uf, const vecQStr& vecIndicadores);
 
 private:
     Ui::DetalheIndicador *ui;
