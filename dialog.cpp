@@ -13,6 +13,7 @@ Dialog::Dialog(QWidget *parent) :
     ui->tableWidget_processado->setHorizontalHeaderLabels(header);
     ui->tableWidget_processado->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget_processado->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->lineEdit_diretorio_origem->setEnabled(false);
 }
 
 Dialog::~Dialog()
@@ -82,7 +83,10 @@ void Dialog::on_pushButton_processar_clicked()
 {
 
     if(ui->lineEdit_diretorio_origem->text().isEmpty())
+    {
+        QMessageBox::critical(this, tr("Processamento"), QString("Selecione um diretório válido!"), QMessageBox::Ok);
         return;
+    }
 
     mDirIn.cd(ui->lineEdit_diretorio_origem->text());
 
@@ -101,7 +105,7 @@ void Dialog::on_pushButton_exportar_clicked()
 {
     if(mVecIndicadores.empty())
     {
-        QMessageBox::critical(this, tr("Processamento"), QString("Processe o arquivo, arrombado!"), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Processamento"), QString("Processe o arquivo antes de exportar!"), QMessageBox::Ok);
         return;
     }
 
