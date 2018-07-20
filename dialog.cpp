@@ -7,9 +7,9 @@ Dialog::Dialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->tableWidget_processado->setColumnCount(6);
+    ui->tableWidget_processado->setColumnCount(7);
     QStringList header;
-    header << "Prestadora" << "UF" << "SMP 10" << "SMP 11 Down" << "SMP 11 Up" << "Erro Estatístico";
+    header << "Prestadora" << "UF" << "SMP 10" << "SMP 11 Down" << "SMP 11 Up" << "Erro Estatístico" << "Medições Válidas";
     ui->tableWidget_processado->setHorizontalHeaderLabels(header);
     ui->tableWidget_processado->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget_processado->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -27,11 +27,20 @@ Dialog::~Dialog()
 void Dialog::updateTable()
 {
     QStringList strCsv;
-    int colPrest = 0, colUF = 2, colSmp10 = 10, colSmp11_down = 11, colSmp11_up = 12, colErro = 13;
+    int colPrest = 0, colUF = 2, colSmp10 = 10, colSmp11_down = 11, colSmp11_up = 12, colErro = 13, colMedVal = 4;
     int linha = 0;
 
     std::vector<QString> ufsAtualizadas;
     ufsAtualizadas.reserve((mVecIndicadores.size()/2) + 1);
+
+    std::map<QString, long> mapMedVal;
+
+    for(auto itQStr = mVecIndicadores.begin() + 1; itQStr != mVecIndicadores.end(); ++itQStr)
+    {
+        strCsv = (*itQStr).split(";");
+
+        mapMedVal[strCsv[colUF]] += strCsv[colMedVal].toLong();
+    }
 
     ui->tableWidget_processado->clearContents();
     ui->tableWidget_processado->setRowCount(0);
@@ -42,7 +51,6 @@ void Dialog::updateTable()
 
         if(std::find(ufsAtualizadas.begin(), ufsAtualizadas.end(), strCsv[colUF]) == ufsAtualizadas.end())
         {
-
             ui->tableWidget_processado->setRowCount(linha + 1);
             ui->tableWidget_processado->setItem(linha, 0, new QTableWidgetItem(strCsv[colPrest]));
             ui->tableWidget_processado->setItem(linha, 1, new QTableWidgetItem(strCsv[colUF]));
@@ -50,9 +58,9 @@ void Dialog::updateTable()
             ui->tableWidget_processado->setItem(linha, 3, new QTableWidgetItem(formatarPorcentagem(strCsv[colSmp11_down])));
             ui->tableWidget_processado->setItem(linha, 4, new QTableWidgetItem(formatarPorcentagem(strCsv[colSmp11_up])));
             ui->tableWidget_processado->setItem(linha, 5, new QTableWidgetItem(formatarPorcentagem(strCsv[colErro])));
+            ui->tableWidget_processado->setItem(linha, 6, new QTableWidgetItem(QString::number(mapMedVal[strCsv[colUF]])));
             ufsAtualizadas.push_back(strCsv[colUF]);
             ++linha;
-
         }
 
     }
@@ -75,14 +83,17 @@ void Dialog::atualizarCelulas()
 {
     double smp_10, smp_11_down, smp_11_up, erro_est;
 
+    long medVal;
+
     for(int linha = 0 ; linha < ui->tableWidget_processado->rowCount(); ++linha)
     {
         smp_10 = ui->tableWidget_processado->item(linha, 2)->text().split("%")[0].toDouble();
         smp_11_down = ui->tableWidget_processado->item(linha, 3)->text().split("%")[0].toDouble();
         smp_11_up = ui->tableWidget_processado->item(linha, 4)->text().split("%")[0].toDouble();
         erro_est = ui->tableWidget_processado->item(linha, 5)->text().split("%")[0].toDouble();
+        medVal = ui->tableWidget_processado->item(linha, 6)->text().toLong();
 
-        if(erro_est > 7)
+        if(erro_est > 7 || medVal < 2430)
         {
             ui->tableWidget_processado->item(linha, 2)->setBackground(Qt::gray);
             ui->tableWidget_processado->item(linha, 3)->setBackground(Qt::gray);
