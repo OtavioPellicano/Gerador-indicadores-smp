@@ -22,7 +22,7 @@ DetalheIndicador::~DetalheIndicador()
 void DetalheIndicador::atualizarTabelaIndice(const QString& prestadora, const QString& uf, const vecQStr& vecIndicadores)
 {
     QStringList strCsv;
-    int colPrest = 0, colUF = 2, colWanmode = 3, colMedVal = 4, colColVal = 5,
+    int colPrest = 0, colUF = 2, colWanmode = 3, colMedVal = 4,
             colInd_39 = 6, colInd_40 = 7, colInd_41 = 8, colInd_42 = 9;
     int linha = 0;
 
