@@ -81,12 +81,6 @@ private:
 
     void clearAll();
 
-    void ordenarMapUfMedicao(map<QString, map<QString, set<QString, less<QString>>>>& mapUfMedicao);
-
-    void ordernarDateTime(set<QString, less<QString> > &medicoes);
-
-    QDateTime dateTimeFromQString(const QString& strDateTime);
-
 private:
     QString mNomePrestadora;
     tipoPrestadora mTipo;

@@ -400,75 +400,6 @@ void PrestadoraIndicador::clearAll()
 
 }
 
-//void PrestadoraIndicador::ordenarMapUfMedicao(map<QString, map<QString, set<QString, less<QString> > > > &mapUfMedicao)
-//{
-//    //key_1 = UF
-//    //key_2 = wanMode
-
-//    map<QString, map<QString, set<QString, less<QString> > > > mapTemp;
-
-//    for(auto itMap1 = mapUfMedicao.begin(); itMap1 != mapUfMedicao.end(); ++itMap1)
-//    {
-//        for(auto itMap2 = itMap1->second.begin(); itMap2 != itMap1->second.end(); ++itMap2)
-//        {
-//            ordernarDateTime(itMap2->second);
-//            mapTemp[itMap1->first][itMap2->first] = itMap2->second;
-//        }
-//    }
-
-//    mapUfMedicao = mapTemp;
-//}
-
-//void PrestadoraIndicador::ordernarDateTime(set<QString, less<QString> > &medicoes)
-//{
-//    QMap<QDateTime, QString> mapDateTimeMedicao;
-
-//    size_t tamAnt = medicoes.size();
-
-//    for(auto itQStr = medicoes.begin(); itQStr != medicoes.end(); ++itQStr)
-//    {
-//        mapDateTimeMedicao[dateTimeFromQString((*itQStr).split(";")[0])] = *itQStr;
-////        mapDateTimeMedicao.insert({dateTimeFromQString((*medicoes.begin()).split(";")[0]), *itQStr});
-//    }
-
-//    medicoes.clear();
-//    for(auto itMap = mapDateTimeMedicao.begin(); itMap != mapDateTimeMedicao.end(); ++itMap)
-//    {
-//        medicoes.insert(itMap.value());
-//    }
-
-//    size_t tamDepois = medicoes.size();
-
-//    if(tamAnt != tamDepois)
-//    {
-//        std::cout << "Antes != depois!" << std::endl;
-//    }
-
-
-//}
-
-//QDateTime PrestadoraIndicador::dateTimeFromQString(const QString &strDateTime)
-//{
-
-//    int ano, mes, dia, hora, minuto, segundo;
-//    //2018-07-01 00:42:25
-//    QStringList anoMesDia;
-//    QStringList horaMinSeg;
-//    anoMesDia = strDateTime.split("-");
-//    horaMinSeg = anoMesDia[2].split(" ");
-//    dia = horaMinSeg[0].toInt();
-//    horaMinSeg = horaMinSeg[1].split(":");
-
-//    ano = anoMesDia[0].toInt();
-//    mes = anoMesDia[1].toInt();
-//    hora = horaMinSeg[0].toInt();
-//    minuto = horaMinSeg[1].toInt();
-//    segundo = horaMinSeg[2].toInt();
-
-//    return QDateTime(QDate(ano, mes, dia), QTime(hora, minuto, segundo));
-
-//}
-
 QString PrestadoraIndicador::sep() const
 {
     return mSep;
@@ -598,7 +529,6 @@ bool PrestadoraIndicador::salvarMedicoes(const QDir &dirOut)
  */
 vector<QString> PrestadoraIndicador::indicadores()
 {
-//    ordenarMapUfMedicao(this->mMapUfMedicao);
     gerarMetaSmp(this->mMapUfMeta, this->mMapUfMedicao);
     gerarColetoresMedicoesPorUf(this->mMapUfQntColetor,this->mMapUfQntMedicao, this->mMapUfErro, this->mMapUfMedicao);
     this->mMapUfMedicao.clear();
