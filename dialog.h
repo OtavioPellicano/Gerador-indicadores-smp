@@ -11,6 +11,7 @@
 #include <QTableWidget>
 #include <QStringList>
 #include <algorithm>
+#include "detalheindicador.h"
 
 namespace Ui {
 class Dialog;
@@ -28,12 +29,15 @@ private:
     void updateTable();
     QString formatarPorcentagem(const QString& qstr);
 
+
 private slots:
     void on_pushButton_buscar_clicked();
 
     void on_pushButton_processar_clicked();
 
     void on_pushButton_exportar_clicked();
+
+    void cellSelected(int row, int col);
 
 private:
     Ui::Dialog *ui;
@@ -42,6 +46,8 @@ private:
     PrestadoraIndicador *mPrestInd;
 
     std::vector<QString> mVecIndicadores;
+
+    DetalheIndicador* mDetInd;
 
 };
 

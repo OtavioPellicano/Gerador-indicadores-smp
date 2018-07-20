@@ -27,12 +27,15 @@ SOURCES += \
         main.cpp \
         dialog.cpp \
     Medicao.cpp \
-    PrestadoraIndicador.cpp
+    PrestadoraIndicador.cpp \
+    detalheindicador.cpp
 
 HEADERS += \
         dialog.h \
     Medicao.h \
-    PrestadoraIndicador.h
+    PrestadoraIndicador.h \
+    detalheindicador.h
 
 FORMS += \
-        dialog.ui
+        dialog.ui \
+    detalheindicador.ui

@@ -14,6 +14,9 @@ Dialog::Dialog(QWidget *parent) :
     ui->tableWidget_processado->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget_processado->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->lineEdit_diretorio_origem->setEnabled(false);
+
+    connect(ui->tableWidget_processado, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(cellSelected(int,int)));
+
 }
 
 Dialog::~Dialog()
@@ -63,6 +66,13 @@ QString Dialog::formatarPorcentagem(const QString &qstr)
 
     return QString("%1%").arg(med);
 
+}
+
+void Dialog::cellSelected(int row, int col)
+{
+    mDetInd = new DetalheIndicador(this);
+
+    mDetInd->exec();
 }
 
 void Dialog::on_pushButton_buscar_clicked()
@@ -118,6 +128,7 @@ void Dialog::on_pushButton_exportar_clicked()
     if(diretorioDialog.exec() != QDialog::Accepted)
     {
         qDebug() << "false";
+        return;
     }
     else
     {
