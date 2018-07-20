@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>539</width>
-    <height>371</height>
+    <width>666</width>
+    <height>382</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,14 +23,14 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLineEdit" name="lineEdit_diretorio_origem"/>
-        </item>
-        <item>
          <widget class="QPushButton" name="pushButton_buscar">
           <property name="text">
            <string>Buscar</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_diretorio_origem"/>
         </item>
        </layout>
       </item>
