@@ -68,9 +68,14 @@ QString Dialog::formatarPorcentagem(const QString &qstr)
 
 }
 
-void Dialog::cellSelected(int row, int col)
+void Dialog::cellSelected(const int &row, const int & /*col*/)
 {
     mDetInd = new DetalheIndicador(this);
+
+
+    mDetInd->atualizarTabelaIndice(ui->tableWidget_processado->item(row, 0)->text(),
+                                   ui->tableWidget_processado->item(row, 1)->text(),
+                                   mVecIndicadores);
 
     mDetInd->exec();
 }

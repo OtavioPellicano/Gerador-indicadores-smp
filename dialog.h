@@ -37,7 +37,7 @@ private slots:
 
     void on_pushButton_exportar_clicked();
 
-    void cellSelected(int row, int col);
+    void cellSelected(const int& row, const int&);
 
 private:
     Ui::Dialog *ui;
