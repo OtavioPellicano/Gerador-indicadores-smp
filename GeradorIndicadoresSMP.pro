@@ -39,3 +39,6 @@ HEADERS += \
 FORMS += \
         dialog.ui \
     detalheindicador.ui
+
+RESOURCES += \
+    img.qrc
