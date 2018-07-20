@@ -56,6 +56,9 @@ void Dialog::updateTable()
         }
 
     }
+
+    atualizarCelulas();
+
 }
 
 QString Dialog::formatarPorcentagem(const QString &qstr)
@@ -66,6 +69,56 @@ QString Dialog::formatarPorcentagem(const QString &qstr)
 
     return QString("%1%").arg(med);
 
+}
+
+void Dialog::atualizarCelulas()
+{
+    double smp_10, smp_11_down, smp_11_up, erro_est;
+
+    for(int linha = 0 ; linha < ui->tableWidget_processado->rowCount(); ++linha)
+    {
+        smp_10 = ui->tableWidget_processado->item(linha, 2)->text().split("%")[0].toDouble();
+        smp_11_down = ui->tableWidget_processado->item(linha, 3)->text().split("%")[0].toDouble();
+        smp_11_up = ui->tableWidget_processado->item(linha, 4)->text().split("%")[0].toDouble();
+        erro_est = ui->tableWidget_processado->item(linha, 5)->text().split("%")[0].toDouble();
+
+        if(erro_est > 7)
+        {
+            ui->tableWidget_processado->item(linha, 2)->setBackground(Qt::gray);
+            ui->tableWidget_processado->item(linha, 3)->setBackground(Qt::gray);
+            ui->tableWidget_processado->item(linha, 4)->setBackground(Qt::gray);
+            continue;
+        }
+
+        if(smp_10 >= 95)
+        {
+            ui->tableWidget_processado->item(linha, 2)->setBackground(Qt::green);
+        }
+        else
+        {
+            ui->tableWidget_processado->item(linha, 2)->setBackground(Qt::red);
+        }
+
+        if(smp_11_down >= 80)
+        {
+            ui->tableWidget_processado->item(linha, 3)->setBackground(Qt::green);
+        }
+        else
+        {
+            ui->tableWidget_processado->item(linha, 3)->setBackground(Qt::red);
+        }
+
+        if(smp_11_up >= 80)
+        {
+            ui->tableWidget_processado->item(linha, 4)->setBackground(Qt::green);
+        }
+        else
+        {
+            ui->tableWidget_processado->item(linha, 4)->setBackground(Qt::red);
+        }
+
+
+    }
 }
 
 void Dialog::cellSelected(const int &row, const int & /*col*/)

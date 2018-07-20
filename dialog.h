@@ -29,6 +29,8 @@ private:
     void updateTable();
     QString formatarPorcentagem(const QString& qstr);
 
+    void atualizarCelulas();
+
 
 private slots:
     void on_pushButton_buscar_clicked();
