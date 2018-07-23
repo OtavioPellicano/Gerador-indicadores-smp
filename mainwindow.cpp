@@ -1,9 +1,9 @@
-#include "dialog.h"
-#include "ui_dialog.h"
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
 
-Dialog::Dialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::Dialog)
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
@@ -19,12 +19,12 @@ Dialog::Dialog(QWidget *parent) :
 
 }
 
-Dialog::~Dialog()
+MainWindow::~MainWindow()
 {
     delete ui;
 }
 
-void Dialog::updateTable()
+void MainWindow::updateTable()
 {
     QStringList strCsv;
     int colPrest = 0, colUF = 2, colSmp10 = 10, colSmp11_down = 11, colSmp11_up = 12, colErro = 13, colMedVal = 4;
@@ -69,7 +69,7 @@ void Dialog::updateTable()
 
 }
 
-QString Dialog::formatarPorcentagem(const QString &qstr)
+QString MainWindow::formatarPorcentagem(const QString &qstr)
 {
     double med = qstr.toDouble();
 
@@ -79,7 +79,7 @@ QString Dialog::formatarPorcentagem(const QString &qstr)
 
 }
 
-void Dialog::atualizarCelulas()
+void MainWindow::atualizarCelulas()
 {
     double smp_10, smp_11_down, smp_11_up, erro_est;
 
@@ -132,7 +132,7 @@ void Dialog::atualizarCelulas()
     }
 }
 
-void Dialog::cellSelected(const int &row, const int & /*col*/)
+void MainWindow::cellSelected(const int &row, const int & /*col*/)
 {
     mDetInd = new DetalheIndicador(this);
 
@@ -144,7 +144,8 @@ void Dialog::cellSelected(const int &row, const int & /*col*/)
     mDetInd->exec();
 }
 
-void Dialog::on_pushButton_buscar_clicked()
+
+void MainWindow::on_actionBuscarDiretorio_triggered()
 {
     QFileDialog diretorioDialog(this);
 
@@ -158,29 +159,7 @@ void Dialog::on_pushButton_buscar_clicked()
     }
 }
 
-void Dialog::on_pushButton_processar_clicked()
-{
-
-    if(ui->lineEdit_diretorio_origem->text().isEmpty())
-    {
-        QMessageBox::critical(this, tr("Processamento"), QString("Selecione um diretório válido!"), QMessageBox::Ok);
-        return;
-    }
-
-    mDirIn.cd(ui->lineEdit_diretorio_origem->text());
-
-    mPrestInd = new PrestadoraIndicador(SMP);
-    mPrestInd->carregarMedicoes(mDirIn);
-    mVecIndicadores = mPrestInd->indicadores();
-
-    updateTable();
-
-    QMessageBox::information(this, tr("Processamento"), QString("Processamento concluido!"), QMessageBox::Ok);
-
-    delete mPrestInd;
-}
-
-void Dialog::on_pushButton_exportar_clicked()
+void MainWindow::on_actionSalvar_triggered()
 {
     if(mVecIndicadores.empty())
     {
@@ -217,8 +196,32 @@ void Dialog::on_pushButton_exportar_clicked()
         }
     }
 
-
     QMessageBox::information(this, tr("Processamento"), QString("Arquivo exportado no caminho:\n%1").arg(diretorioDialog.selectedFiles()[0]), QMessageBox::Ok);
 
+}
 
+void MainWindow::on_actionProcessar_triggered()
+{
+    if(ui->lineEdit_diretorio_origem->text().isEmpty())
+    {
+        QMessageBox::critical(this, tr("Processamento"), QString("Selecione um diretório válido!"), QMessageBox::Ok);
+        return;
+    }
+
+    mDirIn.cd(ui->lineEdit_diretorio_origem->text());
+
+    mPrestInd = new PrestadoraIndicador(SMP);
+    mPrestInd->carregarMedicoes(mDirIn);
+    mVecIndicadores = mPrestInd->indicadores();
+
+    updateTable();
+
+    QMessageBox::information(this, tr("Processamento"), QString("Processamento concluido!"), QMessageBox::Ok);
+
+    delete mPrestInd;
+}
+
+void MainWindow::on_actionSair_triggered()
+{
+    this->close();
 }

@@ -25,20 +25,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        dialog.cpp \
     Medicao.cpp \
     PrestadoraIndicador.cpp \
-    detalheindicador.cpp
+    detalheindicador.cpp \
+    mainwindow.cpp
 
 HEADERS += \
-        dialog.h \
     Medicao.h \
     PrestadoraIndicador.h \
-    detalheindicador.h
+    detalheindicador.h \
+    mainwindow.h
 
 FORMS += \
-        dialog.ui \
-    detalheindicador.ui
+    detalheindicador.ui \
+    mainwindow.ui
 
 RESOURCES += \
     img.qrc

@@ -1,7 +1,7 @@
-#ifndef DIALOG_H
-#define DIALOG_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
-#include <QDialog>
+#include <QMainWindow>
 #include <QFileDialog>
 #include <QString>
 #include <QDebug>
@@ -14,16 +14,16 @@
 #include "detalheindicador.h"
 
 namespace Ui {
-class Dialog;
+class MainWindow;
 }
 
-class Dialog : public QDialog
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit Dialog(QWidget *parent = 0);
-    ~Dialog();
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
 
 private:
     void updateTable();
@@ -33,16 +33,19 @@ private:
 
 
 private slots:
-    void on_pushButton_buscar_clicked();
-
-    void on_pushButton_processar_clicked();
-
-    void on_pushButton_exportar_clicked();
 
     void cellSelected(const int& row, const int&);
 
+    void on_actionBuscarDiretorio_triggered();
+
+    void on_actionSalvar_triggered();
+
+    void on_actionProcessar_triggered();
+
+    void on_actionSair_triggered();
+
 private:
-    Ui::Dialog *ui;
+    Ui::MainWindow *ui;
 
     QDir mDirIn;
     PrestadoraIndicador *mPrestInd;
@@ -50,7 +53,6 @@ private:
     std::vector<QString> mVecIndicadores;
 
     DetalheIndicador* mDetInd;
-
 };
 
-#endif // DIALOG_H
+#endif // MAINWINDOW_H

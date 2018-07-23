@@ -1,14 +1,14 @@
-#include "dialog.h"
 #include <QApplication>
+#include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    Dialog w;
+    MainWindow w;
     w.setWindowIcon(QIcon(":/img/mainico.png"));
-    w.setWindowTitle("Gerador de Medições SMP");
+    w.setWindowTitle("Gerador de Indicadores SMP");
 
-    w.show();
+    w.showMaximized();
 
     return a.exec();
 }
