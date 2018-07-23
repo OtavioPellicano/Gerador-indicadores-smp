@@ -208,6 +208,8 @@ void MainWindow::on_actionProcessar_triggered()
         return;
     }
 
+    ui->statusbar->showMessage("Processando...", 1);
+
     mDirIn.cd(ui->lineEdit_diretorio_origem->text());
 
     mPrestInd = new PrestadoraIndicador(SMP);

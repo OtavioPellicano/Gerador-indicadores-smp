@@ -1,5 +1,12 @@
 <RCC>
     <qresource prefix="/">
         <file>img/mainico.png</file>
+        <file>img/robot-arm.png</file>
+        <file>img/plan.png</file>
+        <file>img/door.png</file>
+        <file>img/analysis.png</file>
+        <file>img/engineer.png</file>
+        <file>img/search.png</file>
+        <file>img/diskette.png</file>
     </qresource>
 </RCC>
