@@ -15,6 +15,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget_processado->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->lineEdit_diretorio_origem->setEnabled(false);
 
+    ui->actionPlano_Amostral->setEnabled(false);
+    ui->actionRegras_de_Descarte->setEnabled(false);
+    ui->actionProcessar->setEnabled(false);
+    ui->actionSalvar->setEnabled(false);
+
+
     connect(ui->tableWidget_processado, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(cellSelected(int,int)));
 
 }
@@ -156,6 +162,7 @@ void MainWindow::on_actionBuscarDiretorio_triggered()
     if(path != "")
     {
         ui->lineEdit_diretorio_origem->setText(path);
+        ui->actionProcessar->setEnabled(true);
     }
 }
 
@@ -218,6 +225,9 @@ void MainWindow::on_actionProcessar_triggered()
 
     updateTable();
 
+    if(!mVecIndicadores.empty())
+        ui->actionSalvar->setEnabled(true);
+
     QMessageBox::information(this, tr("Processamento"), QString("Processamento concluido!"), QMessageBox::Ok);
 
     delete mPrestInd;
@@ -226,4 +236,48 @@ void MainWindow::on_actionProcessar_triggered()
 void MainWindow::on_actionSair_triggered()
 {
     this->close();
+}
+
+void MainWindow::on_actionDesenvolvedor_triggered()
+{
+    QMessageBox::about(this, tr("Desenvolvedor Gerador de Indicadores SMP"),
+                       tr("<p>O <b>Gerador de Indicadores SMP</b> é um software desenvolvido"
+                          "para simulação dos índices e indicadores do <b>SMP</b> através do rawdata diário ou mensal.</p>"
+
+                          "<p>Desenvolvido com <b>Qt (C++)</b> por <b>Eng. Otavio Pellicano Moreira de Mello</b>, o software "
+                          "apresenta os índices, indicarores, erro estatístico e validade operacional separados por célula e "
+                          "tipo de conexão (3G ou 4G).</p>"
+
+                          "<p>Legenda:</p>"
+
+                          "<p>"
+                              "<ul>"
+                                  "<li><b>Meta:</b> 40% da Velocidade de Referência (Down e Up)</li>"
+                                  "<li><b>Quociente:</b> Mediana por Velocidade de Referência</li>"
+                                  "<li><b>Velocidade de Refência:</b> Velocidade Contratada</li>"
+                              "</ul>"
+                          "</p>"
+
+                          "<p>"
+                              "<ul>"
+                                  "<li><b>Índice 039:</b> Quantidade de Medianas que atingiram a Meta</li>"
+                                  "<li><b>Índice 040:</b> Quantidade total de Medianas</li>"
+                                  "<li><b>Índice 041:</b> Somatório dos Quocientes Down</li>"
+                                  "<li><b>Índice 042:</b> Somatório dos Quocientes Up</li>"
+                              "</ul>"
+                          "</p>"
+
+                          "<p>"
+                              "<ul>"
+                                  "<li>"
+                                      "<b>SMP 10 = (Índice 039)/(Índice 040)</b>"
+                                  "</li>"
+                                  "<li>"
+                                      "<b>SMP 11 Down = (Índice 041)/(Índice 040)</b>"
+                                  "</li>"
+                                  "<li>"
+                                      "<b>SMP 11 Up = (Índice 042)/(Índice 040)</b>"
+                                  "</li>"
+                              "</ul>"
+                          "</p>"));
 }

@@ -44,6 +44,8 @@ private slots:
 
     void on_actionSair_triggered();
 
+    void on_actionDesenvolvedor_triggered();
+
 private:
     Ui::MainWindow *ui;
 

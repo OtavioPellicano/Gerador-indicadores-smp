@@ -61,7 +61,6 @@
     <property name="title">
      <string>Ajuda</string>
     </property>
-    <addaction name="actionSobre"/>
     <addaction name="actionDesenvolvedor"/>
    </widget>
    <widget class="QMenu" name="menuConstruir">
@@ -91,9 +90,6 @@
    <addaction name="actionSalvar"/>
    <addaction name="separator"/>
    <addaction name="actionProcessar"/>
-   <addaction name="separator"/>
-   <addaction name="actionPlano_Amostral"/>
-   <addaction name="actionRegras_de_Descarte"/>
   </widget>
   <action name="actionBuscarDiretorio">
    <property name="icon">
@@ -103,6 +99,9 @@
    <property name="text">
     <string>Buscar Diretório</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
   <action name="actionSalvar">
    <property name="icon">
@@ -111,6 +110,9 @@
    </property>
    <property name="text">
     <string>Exportar Dados</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionSair">
@@ -140,18 +142,13 @@
     <string>Regras de Descarte</string>
    </property>
   </action>
-  <action name="actionSobre">
-   <property name="text">
-    <string>Sobre</string>
-   </property>
-  </action>
   <action name="actionDesenvolvedor">
    <property name="icon">
     <iconset resource="img.qrc">
      <normaloff>:/img/engineer.png</normaloff>:/img/engineer.png</iconset>
    </property>
    <property name="text">
-    <string>Desenvolvedor</string>
+    <string>Sobre</string>
    </property>
   </action>
   <action name="actionProcessar">
@@ -161,6 +158,9 @@
    </property>
    <property name="text">
     <string>Processar</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>
