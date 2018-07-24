@@ -11,6 +11,7 @@ DetalheIndicador::DetalheIndicador(QWidget *parent) :
               "Índice 39" << "Índice 40" << "Índice 41" << "Índice 42";
     ui->tableWidget_detalhe->setColumnCount(8);
     ui->tableWidget_detalhe->setHorizontalHeaderLabels(header);
+    ui->tableWidget_detalhe->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 }
 
