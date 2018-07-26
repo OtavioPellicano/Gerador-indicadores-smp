@@ -29,19 +29,22 @@ SOURCES += \
     PrestadoraIndicador.cpp \
     detalheindicador.cpp \
     mainwindow.cpp \
-    planoamostral.cpp
+    planoamostral.cpp \
+    regrasdescarte.cpp
 
 HEADERS += \
     Medicao.h \
     PrestadoraIndicador.h \
     detalheindicador.h \
     mainwindow.h \
-    planoamostral.h
+    planoamostral.h \
+    regrasdescarte.h
 
 FORMS += \
     detalheindicador.ui \
     mainwindow.ui \
-    planoamostral.ui
+    planoamostral.ui \
+    regrasdescarte.ui
 
 RESOURCES += \
     img.qrc

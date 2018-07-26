@@ -55,7 +55,8 @@ private:
     vecQStr mVecErroPrest;
     vecQStr mVecErroUf;
 
-    const QString finaNamePA = "pa_smp.csv";
+    const QString mFileNamePA = "pa_smp.csv";
+    const QString mNomeDirRef = "data_gismp";
 
 
     vecQStr mVecPrestStd = {

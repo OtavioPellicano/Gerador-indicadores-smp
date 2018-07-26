@@ -16,6 +16,8 @@ PlanoAmostral::PlanoAmostral(QWidget *parent) :
     ui->tableWidget_pa->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget_pa->setSelectionBehavior(QAbstractItemView::SelectRows);
 
+    ui->tableWidget_pa->horizontalHeader()->setStretchLastSection(true);
+
     vecQStrPair vecTemp;
 
     carregarTabelaAtualDoArquivo(vecTemp);
@@ -123,7 +125,7 @@ void PlanoAmostral::carregarTabelaAtualDoArquivo(vecQStrPair &vecPrestadoraUf)
 {
     vecPrestadoraUf.clear();
     QDir dir;
-    std::ifstream arq((dir.absolutePath() + "/PA/" + finaNamePA).toStdString());
+    std::ifstream arq((dir.absolutePath() + "/" + mNomeDirRef + "/" + mFileNamePA).toStdString());
     std::string str;
     QStringList strCsv;
 
@@ -207,10 +209,10 @@ void PlanoAmostral::carregarTabelaAtual(vecQStrPair& vecUfPrestadora)
 bool PlanoAmostral::salvarPA(const vecQStrPair& vecPrestadoraUf)
 {
     QDir dirPA;
-    dirPA.mkdir("PA");
-    dirPA.cd("PA");
+    dirPA.mkdir(mNomeDirRef);
+    dirPA.cd(mNomeDirRef);
 
-    std::ofstream arq((dirPA.absolutePath() + "/" + finaNamePA).toStdString());
+    std::ofstream arq((dirPA.absolutePath() + "/" + mFileNamePA).toStdString());
 
     if(arq.is_open())
     {
