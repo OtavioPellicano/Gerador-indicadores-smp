@@ -14,8 +14,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget_processado->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget_processado->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->lineEdit_diretorio_origem->setEnabled(false);
+    ui->tableWidget_processado->horizontalHeader()->setStretchLastSection(true);
 
-    ui->actionRegras_de_Descarte->setEnabled(false);
+//    ui->actionRegras_de_Descarte->setEnabled(false);
     ui->actionProcessar->setEnabled(false);
     ui->actionSalvar->setEnabled(false);
 
@@ -309,4 +310,17 @@ void MainWindow::on_actionPlano_Amostral_triggered()
 
     mPA->exec();
 
+    delete mPA;
+
+}
+
+void MainWindow::on_actionRegras_de_Descarte_triggered()
+{
+    mRegDescarte = new RegrasDescarte(this);
+
+    mRegDescarte->setWindowTitle("Regras de Descarte");
+
+    mRegDescarte->exec();
+
+    delete mRegDescarte;
 }

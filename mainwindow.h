@@ -12,7 +12,8 @@
 #include <QStringList>
 #include <algorithm>
 #include "detalheindicador.h"
-#include <planoamostral.h>
+#include "planoamostral.h"
+#include "regrasdescarte.h"
 
 namespace Ui {
 class MainWindow;
@@ -49,6 +50,8 @@ private slots:
 
     void on_actionPlano_Amostral_triggered();
 
+    void on_actionRegras_de_Descarte_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -60,6 +63,8 @@ private:
     DetalheIndicador* mDetInd;
 
     PlanoAmostral* mPA;
+
+    RegrasDescarte* mRegDescarte;
 };
 
 #endif // MAINWINDOW_H
