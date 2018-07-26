@@ -7,6 +7,9 @@ RegrasDescarte::RegrasDescarte(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    mTabelaRegAtivas = ui->tableWidget_ativadas;
+    mTabelaRegInativas = ui->tableWidget_desativadas;
+
     QStringList header;
     header << "Código" << "Descrição";
     ui->tableWidget_ativadas->setColumnCount(2);
@@ -78,6 +81,8 @@ void RegrasDescarte::atualizarTabela(QTableWidget &tabela, const mapQStr &mapAti
 {
     tabela.clearContents();
     size_t linha = 0;
+
+    tabela.setRowCount(0);
 
     for(auto itMap = mapAtivDes.begin(); itMap != mapAtivDes.end(); ++itMap)
     {
@@ -156,4 +161,39 @@ void RegrasDescarte::on_pushButton_aplicar_clicked()
     {
         QMessageBox::critical(this, tr("Regras de Descarte"), tr("Erro ao aplicar as Regras de Descarte!\nRegras não aplicadas!"), QMessageBox::Ok);
     }
+}
+
+void RegrasDescarte::on_tableWidget_desativadas_cellDoubleClicked(int row, int /*column*/)
+{
+
+    QString codigo;
+
+    codigo = mTabelaRegInativas->item(row, 0)->text();
+
+    std::map<QString, QString>::iterator itMapDesat;
+    itMapDesat = mMapCodigoDescricaoInativo.find(codigo);
+
+    mMapCodigoDescricaoAtivo.insert({itMapDesat->first, itMapDesat->second});
+    mMapCodigoDescricaoInativo.erase(itMapDesat);
+
+    atualizarTabela(*mTabelaRegInativas, mMapCodigoDescricaoInativo);
+    atualizarTabela(*mTabelaRegAtivas, mMapCodigoDescricaoAtivo);
+
+
+}
+
+void RegrasDescarte::on_tableWidget_ativadas_cellDoubleClicked(int row, int /*column*/)
+{
+    QString codigo;
+
+    codigo = mTabelaRegAtivas->item(row, 0)->text();
+
+    std::map<QString, QString>::iterator itMapAtiv;
+    itMapAtiv = mMapCodigoDescricaoAtivo.find(codigo);
+
+    mMapCodigoDescricaoInativo.insert({itMapAtiv->first, itMapAtiv->second});
+    mMapCodigoDescricaoAtivo.erase(itMapAtiv);
+
+    atualizarTabela(*mTabelaRegInativas, mMapCodigoDescricaoInativo);
+    atualizarTabela(*mTabelaRegAtivas, mMapCodigoDescricaoAtivo);
 }

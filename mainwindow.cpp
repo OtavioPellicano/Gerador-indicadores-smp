@@ -261,11 +261,11 @@ void MainWindow::on_actionSair_triggered()
 void MainWindow::on_actionDesenvolvedor_triggered()
 {
     QMessageBox::about(this, tr("Desenvolvedor Gerador de Indicadores SMP"),
-                       tr("<p>O <b>Gerador de Indicadores SMP</b> é um software desenvolvido"
+                       tr("<p>O <b>Gerador de Indicadores SMP</b> é um software desenvolvido "
                           "para simulação dos índices e indicadores do <b>SMP</b> através do rawdata diário ou mensal.</p>"
 
                           "<p>Desenvolvido com <b>Qt (C++)</b> por <b>Eng. Otavio Pellicano Moreira de Mello</b>, o software "
-                          "apresenta os índices, indicarores, erro estatístico e validade operacional separados por célula e "
+                          "apresenta os índices, indicadores, erro estatístico e validade operacional separados por célula e "
                           "tipo de conexão (3G ou 4G).</p>"
 
                           "<p>Legenda:</p>"

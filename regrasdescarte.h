@@ -31,6 +31,10 @@ public:
 private slots:
     void on_pushButton_aplicar_clicked();
 
+    void on_tableWidget_desativadas_cellDoubleClicked(int row, int column);
+
+    void on_tableWidget_ativadas_cellDoubleClicked(int row, int column);
+
 private:
     void carregarMapCodigoDescarteDoArquivo();
     void atualizarTabela(QTableWidget& tabela, const mapQStr& mapAtivDes);
@@ -39,6 +43,9 @@ private:
 
 private:
     Ui::RegrasDescarte *ui;
+
+    QTableWidget* mTabelaRegAtivas;
+    QTableWidget* mTabelaRegInativas;
 
     const QString mFileNamePA = "rd_smp.csv";
     const QString mNomeDirRef = "data_gismp";
