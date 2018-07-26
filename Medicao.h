@@ -14,11 +14,15 @@ public:
 
     QString medicaoValida() const;
 
+    QString medicao() const;
+
     QString uf() const;
 
     QString wanMode() const;
 
     QString prestadora() const;
+
+    QString descarte() const;
 
 private:
     QString prestadoraFromDeviceId(const QString &deviceId);

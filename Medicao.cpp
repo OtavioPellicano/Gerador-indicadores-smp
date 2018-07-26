@@ -55,6 +55,13 @@ QString Medicao::medicaoValida() const
 
 }
 
+QString Medicao::medicao() const
+{
+    return this->mDataHora % this->mSep % this->mDeviceId % this->mSep % this->mSpeedDown % this->mSep %
+            this->mSpeedUp % this->mSep % this->mDownStream % this->mSep % this->mUpStream % this->mSep % this->mPrestadora;
+
+}
+
 QString Medicao::uf() const
 {
     return this->mUf;
@@ -102,6 +109,11 @@ QString Medicao::prestadoraFromDeviceId(const QString &deviceId)
     }
 
     return prest;
+}
+
+QString Medicao::descarte() const
+{
+    return mDescarte;
 }
 
 //void Medicao::dataHoraSplit(const QString &dataHora, QString &data, QString &hora)
