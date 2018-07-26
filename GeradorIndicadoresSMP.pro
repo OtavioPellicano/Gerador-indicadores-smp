@@ -28,17 +28,20 @@ SOURCES += \
     Medicao.cpp \
     PrestadoraIndicador.cpp \
     detalheindicador.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    planoamostral.cpp
 
 HEADERS += \
     Medicao.h \
     PrestadoraIndicador.h \
     detalheindicador.h \
-    mainwindow.h
+    mainwindow.h \
+    planoamostral.h
 
 FORMS += \
     detalheindicador.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    planoamostral.ui
 
 RESOURCES += \
     img.qrc

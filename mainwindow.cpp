@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget_processado->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->lineEdit_diretorio_origem->setEnabled(false);
 
-    ui->actionPlano_Amostral->setEnabled(false);
     ui->actionRegras_de_Descarte->setEnabled(false);
     ui->actionProcessar->setEnabled(false);
     ui->actionSalvar->setEnabled(false);
@@ -41,6 +40,7 @@ void MainWindow::updateTable()
 
     std::map<QString, long> mapMedVal;
 
+    //for que agrupa as medidas validas (3G + 4G), separado po UF
     for(auto itQStr = mVecIndicadores.begin() + 1; itQStr != mVecIndicadores.end(); ++itQStr)
     {
         strCsv = (*itQStr).split(";");
@@ -91,6 +91,11 @@ void MainWindow::atualizarCelulas()
 
     long medVal;
 
+    mPA = new PlanoAmostral(this);
+    vecQStrPair vecPaPrestadoraUF;
+    vecPaPrestadoraUF = mPA->vecPrestadoraUf();
+    std::pair<QString, QString> prestadoraUf;
+
     for(int linha = 0 ; linha < ui->tableWidget_processado->rowCount(); ++linha)
     {
         smp_10 = ui->tableWidget_processado->item(linha, 2)->text().split("%")[0].toDouble();
@@ -98,6 +103,16 @@ void MainWindow::atualizarCelulas()
         smp_11_up = ui->tableWidget_processado->item(linha, 4)->text().split("%")[0].toDouble();
         erro_est = ui->tableWidget_processado->item(linha, 5)->text().split("%")[0].toDouble();
         medVal = ui->tableWidget_processado->item(linha, 6)->text().toLong();
+
+        prestadoraUf = std::pair<QString, QString>(
+                    ui->tableWidget_processado->item(linha, 0)->text(),
+                    ui->tableWidget_processado->item(linha, 1)->text());
+        if(std::find(vecPaPrestadoraUF.begin(), vecPaPrestadoraUF.end(), prestadoraUf) == vecPaPrestadoraUF.end())
+        {
+            ui->tableWidget_processado->item(linha, 0)->setBackground(Qt::darkMagenta);
+            ui->tableWidget_processado->item(linha, 1)->setBackground(Qt::darkMagenta);
+        }
+
 
         if(erro_est > 7 || medVal < 2430)
         {
@@ -134,14 +149,16 @@ void MainWindow::atualizarCelulas()
             ui->tableWidget_processado->item(linha, 4)->setBackground(Qt::red);
         }
 
-
     }
+
+    delete mPA;
 }
 
 void MainWindow::cellSelected(const int &row, const int & /*col*/)
 {
     mDetInd = new DetalheIndicador(this);
 
+    mDetInd->setWindowTitle("Detalhe do Indicador");
 
     mDetInd->atualizarTabelaIndice(ui->tableWidget_processado->item(row, 0)->text(),
                                    ui->tableWidget_processado->item(row, 1)->text(),
@@ -155,7 +172,9 @@ void MainWindow::on_actionBuscarDiretorio_triggered()
 {
     QFileDialog diretorioDialog(this);
 
-    QString path = diretorioDialog.getExistingDirectory(this, tr("Diretório de Origem"));
+    diretorioDialog.setNameFilter(tr("Text files (*.csv)"));
+    diretorioDialog.setViewMode(QFileDialog::Detail);
+    QString path = diretorioDialog.getExistingDirectory(this, tr("Diretório de Origem"), "/home");
 
     qDebug() << path;
 
@@ -280,4 +299,14 @@ void MainWindow::on_actionDesenvolvedor_triggered()
                                   "</li>"
                               "</ul>"
                           "</p>"));
+}
+
+void MainWindow::on_actionPlano_Amostral_triggered()
+{
+    mPA = new PlanoAmostral(this);
+
+    mPA->setWindowTitle("Plano Amostral");
+
+    mPA->exec();
+
 }

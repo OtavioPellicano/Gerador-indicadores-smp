@@ -12,6 +12,7 @@
 #include <QStringList>
 #include <algorithm>
 #include "detalheindicador.h"
+#include <planoamostral.h>
 
 namespace Ui {
 class MainWindow;
@@ -46,6 +47,8 @@ private slots:
 
     void on_actionDesenvolvedor_triggered();
 
+    void on_actionPlano_Amostral_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -55,6 +58,8 @@ private:
     std::vector<QString> mVecIndicadores;
 
     DetalheIndicador* mDetInd;
+
+    PlanoAmostral* mPA;
 };
 
 #endif // MAINWINDOW_H
