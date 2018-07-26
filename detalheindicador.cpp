@@ -12,6 +12,7 @@ DetalheIndicador::DetalheIndicador(QWidget *parent) :
     ui->tableWidget_detalhe->setColumnCount(8);
     ui->tableWidget_detalhe->setHorizontalHeaderLabels(header);
     ui->tableWidget_detalhe->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidget_detalhe->horizontalHeader()->setStretchLastSection(true);
 
 }
 
