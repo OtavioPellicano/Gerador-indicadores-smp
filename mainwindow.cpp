@@ -26,6 +26,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->tableWidget_processado, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(cellSelected(int,int)));
 
+    connect(ui->tableWidget_processado->horizontalHeader(), SIGNAL(sectionDoubleClicked(int)), this, SLOT(on_headerDoubleClicked(int)));
+
+
 }
 
 MainWindow::~MainWindow()
@@ -158,8 +161,9 @@ void MainWindow::atualizarCelulas()
     delete mPA;
 }
 
-void MainWindow::cellSelected(const int &row, const int & /*col*/)
+void MainWindow::cellSelected(const int &row, const int& /*col*/)
 {
+
     mDetInd = new DetalheIndicador(this);
 
     mDetInd->setWindowTitle("Detalhe do Indicador");
@@ -343,4 +347,9 @@ void MainWindow::on_actionRecuperar_Velocidade_Contratada_triggered()
     }
 
     delete mRecVelCont;
+}
+
+void MainWindow::on_headerDoubleClicked(const int &col)
+{
+    ui->tableWidget_processado->sortByColumn(col);
 }

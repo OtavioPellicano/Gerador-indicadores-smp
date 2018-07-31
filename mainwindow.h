@@ -55,6 +55,8 @@ private slots:
 
     void on_actionRecuperar_Velocidade_Contratada_triggered();
 
+    void on_headerDoubleClicked(const int& col);
+
 private:
     Ui::MainWindow *ui;
 
@@ -70,6 +72,7 @@ private:
     RegrasDescarte* mRegDescarte;
 
     RecuperarVelocidadeContratada* mRecVelCont;
+
 };
 
 #endif // MAINWINDOW_H
