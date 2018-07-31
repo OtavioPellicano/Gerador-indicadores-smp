@@ -28,6 +28,9 @@ RegrasDescarte::RegrasDescarte(QWidget *parent) :
     if(mMapCodigoDescricaoAtivo.empty() && mMapCodigoDescricaoInativo.empty())
     {
         atualizarTabela(*ui->tableWidget_ativadas, mMapCodigoDescricao);
+        carregarMapsCodigoDescarte(*ui->tableWidget_ativadas, mMapCodigoDescricaoAtivo);
+        carregarMapsCodigoDescarte(*ui->tableWidget_desativadas, mMapCodigoDescricaoInativo);
+        salvarRegras(mMapCodigoDescricaoAtivo, mMapCodigoDescricaoInativo);
     }
     else
     {
