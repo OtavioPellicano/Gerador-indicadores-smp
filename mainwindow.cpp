@@ -16,6 +16,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEdit_diretorio_origem->setEnabled(false);
     ui->tableWidget_processado->horizontalHeader()->setStretchLastSection(true);
 
+    ui->actionRecuperar_UF->setEnabled(false);
+    ui->actionRecuperar_Velocidade_Contratada->setEnabled(false);
+
 //    ui->actionRegras_de_Descarte->setEnabled(false);
     ui->actionProcessar->setEnabled(false);
     ui->actionSalvar->setEnabled(false);
@@ -183,6 +186,7 @@ void MainWindow::on_actionBuscarDiretorio_triggered()
     {
         ui->lineEdit_diretorio_origem->setText(path);
         ui->actionProcessar->setEnabled(true);
+        ui->actionRecuperar_Velocidade_Contratada->setEnabled(true);
     }
 }
 
@@ -323,4 +327,20 @@ void MainWindow::on_actionRegras_de_Descarte_triggered()
     mRegDescarte->exec();
 
     delete mRegDescarte;
+}
+
+void MainWindow::on_actionRecuperar_Velocidade_Contratada_triggered()
+{
+    mRecVelCont = new RecuperarVelocidadeContratada(QDir(ui->lineEdit_diretorio_origem->text()));
+
+    if(mRecVelCont->processar())
+    {
+        QMessageBox::information(this, tr("Recuperação da Velocidade Contratada"), QString("Velocidade Contratada recuperada!"), QMessageBox::Ok);
+    }
+    else
+    {
+        QMessageBox::critical(this, tr("Recuperação da Velocidade Contratada"), QString("Erro ao tentar recuperar Velocidade Contratada!"), QMessageBox::Ok);
+    }
+
+    delete mRecVelCont;
 }

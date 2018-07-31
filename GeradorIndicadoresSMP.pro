@@ -30,7 +30,11 @@ SOURCES += \
     detalheindicador.cpp \
     mainwindow.cpp \
     planoamostral.cpp \
-    regrasdescarte.cpp
+    regrasdescarte.cpp \
+    IdentificacaoDaUf.cpp \
+    validade.cpp \
+    recuperaruf.cpp \
+    recuperarvelocidadecontratada.cpp
 
 HEADERS += \
     Medicao.h \
@@ -38,7 +42,11 @@ HEADERS += \
     detalheindicador.h \
     mainwindow.h \
     planoamostral.h \
-    regrasdescarte.h
+    regrasdescarte.h \
+    IdentificacaoDaUf.h \
+    validade.h \
+    recuperaruf.h \
+    recuperarvelocidadecontratada.h
 
 FORMS += \
     detalheindicador.ui \

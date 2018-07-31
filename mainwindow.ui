@@ -67,6 +67,9 @@
     <property name="title">
      <string>Construir</string>
     </property>
+    <addaction name="actionRecuperar_Velocidade_Contratada"/>
+    <addaction name="actionRecuperar_UF"/>
+    <addaction name="separator"/>
     <addaction name="actionProcessar"/>
    </widget>
    <addaction name="menuArquivo"/>
@@ -161,6 +164,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionRecuperar_UF">
+   <property name="text">
+    <string>Recuperar UF</string>
+   </property>
+  </action>
+  <action name="actionRecuperar_Velocidade_Contratada">
+   <property name="text">
+    <string>Recuperar Velocidade Contratada</string>
    </property>
   </action>
  </widget>

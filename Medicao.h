@@ -24,6 +24,10 @@ public:
 
     QString descarte() const;
 
+    QString downStream() const;
+
+    QString upStream() const;
+
 private:
     QString prestadoraFromDeviceId(const QString &deviceId);
 

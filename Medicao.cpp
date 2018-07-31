@@ -111,6 +111,16 @@ QString Medicao::prestadoraFromDeviceId(const QString &deviceId)
     return prest;
 }
 
+QString Medicao::upStream() const
+{
+    return mUpStream;
+}
+
+QString Medicao::downStream() const
+{
+    return mDownStream;
+}
+
 QString Medicao::descarte() const
 {
     return mDescarte;

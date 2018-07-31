@@ -14,6 +14,7 @@
 #include "detalheindicador.h"
 #include "planoamostral.h"
 #include "regrasdescarte.h"
+#include "recuperarvelocidadecontratada.h"
 
 namespace Ui {
 class MainWindow;
@@ -52,6 +53,8 @@ private slots:
 
     void on_actionRegras_de_Descarte_triggered();
 
+    void on_actionRecuperar_Velocidade_Contratada_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -65,6 +68,8 @@ private:
     PlanoAmostral* mPA;
 
     RegrasDescarte* mRegDescarte;
+
+    RecuperarVelocidadeContratada* mRecVelCont;
 };
 
 #endif // MAINWINDOW_H
