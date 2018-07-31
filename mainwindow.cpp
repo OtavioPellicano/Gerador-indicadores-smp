@@ -351,5 +351,6 @@ void MainWindow::on_actionRecuperar_Velocidade_Contratada_triggered()
 
 void MainWindow::on_headerDoubleClicked(const int &col)
 {
-    ui->tableWidget_processado->sortByColumn(col);
+    if(col != 6)
+        ui->tableWidget_processado->sortByColumn(col);
 }
