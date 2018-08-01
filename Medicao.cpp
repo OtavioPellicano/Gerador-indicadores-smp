@@ -55,10 +55,38 @@ QString Medicao::medicaoValida() const
 
 }
 
-QString Medicao::medicao() const
+QString Medicao::medicaoValida(const std::map<QString, QString> &mapRegInatCodDesc, const tipoPrestadora& tipo) const
 {
-    return this->mDataHora % this->mSep % this->mDeviceId % this->mSep % this->mSpeedDown % this->mSep %
-            this->mSpeedUp % this->mSep % this->mDownStream % this->mSep % this->mUpStream % this->mSep % this->mPrestadora;
+
+    if(tipo == SMP)
+    {
+        if(!this->mSpeedDown.isEmpty() && !this->mSpeedUp.isEmpty()
+                && !this->mDownStream.isEmpty() && !this->mUpStream.isEmpty()
+                && (this->mWanMode == "3G" || this->mWanMode == "4G"))
+        {
+            //map das regras Inativas!!!!!
+            if(mapRegInatCodDesc.find(this->mDescarte) != mapRegInatCodDesc.end()
+                    || this->mDescarte.isEmpty())
+            {
+                return this->mDataHora % this->mSep % this->mDeviceId % this->mSep % this->mSpeedDown % this->mSep %
+                        this->mSpeedUp % this->mSep % this->mDownStream % this->mSep % this->mUpStream % this->mSep % this->mPrestadora;
+
+            }
+            else
+            {
+                return "";
+            }
+        }
+        else
+        {
+            return "";
+        }
+
+    }
+    else    //Não está implementado SCM ainda
+    {
+        return "";
+    }
 
 }
 

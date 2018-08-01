@@ -43,6 +43,8 @@ public:
 
     vector<QString> indicadores();
 
+    bool carregarMedicoes(const QDir &dirIn, const map<QString, QString>& mapRegInaCodDes);
+    void addMedicao(const QString &medicao, const map<QString, QString> &mapRegInaCodDes);
 private:
 
     void addMedicao(const QString &medicao);

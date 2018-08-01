@@ -248,7 +248,19 @@ void MainWindow::on_actionProcessar_triggered()
     mDirIn.cd(ui->lineEdit_diretorio_origem->text());
 
     mPrestInd = new PrestadoraIndicador(SMP);
-    mPrestInd->carregarMedicoes(mDirIn);
+
+    mRegDescarte = new RegrasDescarte(this);
+
+    if(mRegDescarte->mapCodigoDescricaoInativo().empty())
+    {
+
+        mPrestInd->carregarMedicoes(mDirIn);
+    }
+    else
+    {
+        mPrestInd->carregarMedicoes(mDirIn, mRegDescarte->mapCodigoDescricaoInativo());
+    }
+
     mVecIndicadores = mPrestInd->indicadores();
 
     updateTable();
@@ -259,6 +271,7 @@ void MainWindow::on_actionProcessar_triggered()
     QMessageBox::information(this, tr("Processamento"), QString("Processamento concluido!"), QMessageBox::Ok);
 
     delete mPrestInd;
+    delete mRegDescarte;
 }
 
 void MainWindow::on_actionSair_triggered()

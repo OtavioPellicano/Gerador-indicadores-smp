@@ -4,6 +4,7 @@
 #include <QStringList>
 #include <QStringBuilder>
 #include <string>
+#include <map>
 
 enum tipoPrestadora{SMP, SCM};
 
@@ -14,7 +15,7 @@ public:
 
     QString medicaoValida() const;
 
-    QString medicao() const;
+    QString medicaoValida(const std::map<QString, QString>& mapRegInatCodDesc, const tipoPrestadora &tipo = SMP) const;
 
     QString uf() const;
 

@@ -432,6 +432,53 @@ void PrestadoraIndicador::addMedicao(const QString &medicao)
 
 }
 
+void PrestadoraIndicador::addMedicao(const QString& medicao, const map<QString, QString>& mapRegInaCodDes)
+{
+    Medicao med(medicao, tipo(), sep());
+
+    if(!med.medicaoValida(mapRegInaCodDes).isEmpty())
+    {
+        this->mMapUfMedicao[med.uf()][med.wanMode()].insert(med.medicaoValida(mapRegInaCodDes));
+        if(!this->mPrestadoraAtualizada)
+        {
+            this->mPrestadoraAtualizada = true;
+            this->mNomePrestadora = med.prestadora();
+        }
+    }
+}
+
+
+bool PrestadoraIndicador::carregarMedicoes(const QDir& dirIn, const map<QString, QString> &mapRegInaCodDes)
+{
+    QStringList arqs = dirIn.entryList(QStringList("*.csv"));
+    string str;
+    QString qstr;
+
+    ifstream arq;
+    for(auto itQStr = arqs.begin(); itQStr != arqs.end(); ++itQStr)
+    {
+        arq.open(dirIn.absoluteFilePath(*itQStr).toStdString());
+
+        if(arq.is_open())
+        {
+            while (getline(arq, str)) {
+                qstr = QString::fromStdString(str);
+                this->addMedicao(qstr, mapRegInaCodDes);
+            }
+            arq.close();
+        }
+        else
+        {
+            qDebug() << "Erro ao abrir o arquivo de origem: " << *itQStr;
+            return false;
+        }
+
+    }
+
+    return true;
+
+}
+
 bool PrestadoraIndicador::carregarMedicoes(const QDir &dirIn)
 {
     QStringList arqs = dirIn.entryList(QStringList("*.csv"));
