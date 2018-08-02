@@ -19,7 +19,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionRecuperar_UF->setEnabled(false);
     ui->actionRecuperar_Velocidade_Contratada->setEnabled(false);
 
-//    ui->actionRegras_de_Descarte->setEnabled(false);
     ui->actionProcessar->setEnabled(false);
     ui->actionSalvar->setEnabled(false);
 
@@ -191,6 +190,7 @@ void MainWindow::on_actionBuscarDiretorio_triggered()
         ui->lineEdit_diretorio_origem->setText(path);
         ui->actionProcessar->setEnabled(true);
         ui->actionRecuperar_Velocidade_Contratada->setEnabled(true);
+        ui->actionRecuperar_UF->setEnabled(true);
     }
 }
 
@@ -348,14 +348,23 @@ void MainWindow::on_actionRegras_de_Descarte_triggered()
 
 void MainWindow::on_actionRecuperar_Velocidade_Contratada_triggered()
 {
+    QMessageBox msg(this);
+    msg.setWindowTitle(tr("Recuperação de Velocidade Contratada"));
+    msg.setText("Recuperando Velocidade Contratada...");
+    msg.setStandardButtons(0);  //removendo todos os botões
+    msg.show();
+    QTest::qWait(1);    //Esperando a janela abrir
+
     mRecVelCont = new RecuperarVelocidadeContratada(QDir(ui->lineEdit_diretorio_origem->text()));
 
     if(mRecVelCont->processar())
     {
+        msg.close();
         QMessageBox::information(this, tr("Recuperação da Velocidade Contratada"), QString("Velocidade Contratada recuperada!"), QMessageBox::Ok);
     }
     else
     {
+        msg.close();
         QMessageBox::critical(this, tr("Recuperação da Velocidade Contratada"), QString("Erro ao tentar recuperar Velocidade Contratada!"), QMessageBox::Ok);
     }
 
@@ -366,4 +375,16 @@ void MainWindow::on_headerDoubleClicked(const int &col)
 {
     if(col != 6)
         ui->tableWidget_processado->sortByColumn(col);
+}
+
+void MainWindow::on_actionRecuperar_UF_triggered()
+{
+    mRecUf = new RecuperarUfDialog(QDir(ui->lineEdit_diretorio_origem->text()) , this);
+
+    mRecUf->setWindowTitle("Recuperar UF");
+
+    mRecUf->exec();
+
+    delete mRecUf;
+
 }

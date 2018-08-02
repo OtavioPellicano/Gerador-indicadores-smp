@@ -11,10 +11,12 @@
 #include <QTableWidget>
 #include <QStringList>
 #include <algorithm>
+#include <QTest>
 #include "detalheindicador.h"
 #include "planoamostral.h"
 #include "regrasdescarte.h"
 #include "recuperarvelocidadecontratada.h"
+#include "recuperarufdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -57,6 +59,8 @@ private slots:
 
     void on_headerDoubleClicked(const int& col);
 
+    void on_actionRecuperar_UF_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -72,6 +76,8 @@ private:
     RegrasDescarte* mRegDescarte;
 
     RecuperarVelocidadeContratada* mRecVelCont;
+
+    RecuperarUfDialog* mRecUf;
 
 };
 

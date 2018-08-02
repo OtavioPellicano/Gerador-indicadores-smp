@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT += testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -34,7 +35,8 @@ SOURCES += \
     IdentificacaoDaUf.cpp \
     validade.cpp \
     recuperaruf.cpp \
-    recuperarvelocidadecontratada.cpp
+    recuperarvelocidadecontratada.cpp \
+    recuperarufdialog.cpp
 
 HEADERS += \
     Medicao.h \
@@ -46,13 +48,15 @@ HEADERS += \
     IdentificacaoDaUf.h \
     validade.h \
     recuperaruf.h \
-    recuperarvelocidadecontratada.h
+    recuperarvelocidadecontratada.h \
+    recuperarufdialog.h
 
 FORMS += \
     detalheindicador.ui \
     mainwindow.ui \
     planoamostral.ui \
-    regrasdescarte.ui
+    regrasdescarte.ui \
+    recuperarufdialog.ui
 
 RESOURCES += \
     img.qrc
