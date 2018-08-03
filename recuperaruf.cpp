@@ -94,6 +94,18 @@ bool RecuperarUF::recuperar3G(const QDir &dirOrigem)
 
 }
 
+bool RecuperarUF::recuperar4G(const QDir &dirOrigem, const QDir &dirRawdataBruto)
+{
+    std::map<QString, QString> mapChaveTac;
+
+//    if(!carregarMapChaveTac(mapChaveTac, dirRawdataBruto))
+//    {
+//        return false;
+//    }
+
+    return true;
+}
+
 bool RecuperarUF::descarregarMedicoes(std::vector<QString> &vecMed, const QString &fullPath)
 {
     std::ofstream arq;
@@ -129,6 +141,91 @@ bool RecuperarUF::descarregarMedicoes(std::vector<QString> &vecMed, const QStrin
 
     return true;
 
+}
+
+bool RecuperarUF::carregarMapChaveTac(std::map<QString, QString> &mapChaveTac, const QDir &dirRawdataBruto)
+{
+    QStringList strCsv;
+    std::string str;
+    QString deviceId;//[0] => split("-")[1]
+    QString dateTime;//[1] => mid(0, 19)
+    QString tac;//[18]
+    int colDeviceId, colDateTime, colTac;
+
+    QStringList arqs = dirRawdataBruto.entryList(QStringList("*.csv"));
+
+    std::ifstream arq;
+
+    for(auto itQStr = arqs.begin(); itQStr != arqs.end(); ++itQStr)
+    {
+        arq.open(dirRawdataBruto.absoluteFilePath(*itQStr).toStdString());
+
+        if(arq.is_open())
+        {
+            for(size_t i = 0; std::getline(arq, str); ++i)
+            {
+                strCsv = QString::fromStdString(str).split(";");
+
+                if(i == 0)
+                {
+
+                    switch (validarCabecalhoSolucao(strCsv)) {
+                    case AXIROS:
+
+                        colDeviceId = 0;
+                        colDateTime = 1;
+                        colTac = 18;
+
+                        break;
+                    case NETMETRIC:
+
+                        qDebug() << "NETMETRIC não está implementada!";
+                        return false;
+                        break;
+                    default:
+                        qDebug() << "Rawdata bruto não identificado: " << *itQStr;
+                        return false;
+                        break;
+                    }
+
+                }
+
+                deviceId = strCsv[colDeviceId];
+                dateTime = strCsv[colDateTime];
+                tac = strCsv[colTac];
+
+            }
+            arq.close();
+        }
+        else
+        {
+            qDebug() << "Erro ao ler arq rawdata bruto: " << *itQStr;
+            return false;
+        }
+
+    }
+
+    return true;
+}
+
+RecuperarUF::solucao RecuperarUF::validarCabecalhoSolucao(const QStringList& strCsv)
+{
+    if(strCsv[0] == "deviceid"
+            && strCsv[1] == "timestamp"
+            && strCsv[18] == "tac")
+    {
+        return AXIROS;
+    }
+    else if(strCsv[0] == "deviceID"
+            && strCsv[16] == "dateTime"
+            && strCsv[3] == "location")
+    {
+        return NETMETRIC;
+    }
+    else
+    {
+        return NONE;
+    }
 }
 
 QString RecuperarUF::totalMedRecup3G() const

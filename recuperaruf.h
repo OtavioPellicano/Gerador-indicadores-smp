@@ -11,16 +11,22 @@
 
 class RecuperarUF
 {
+private:
+    enum solucao{AXIROS, NETMETRIC, NONE};
 public:
     RecuperarUF();
 
     bool recuperar3G(const QDir& dirOrigem);
     bool recuperar4G(const QDir& dirOrigem, const QDir& dirRawdataBruto);
-    bool descarregarMedicoes(std::vector<QString>& vecMed, const QString& fullPath);
-
 
     QString totalMedRecup3G() const;
     QString totalMedRecupInicial3G() const;
+
+private:
+    bool descarregarMedicoes(std::vector<QString>& vecMed, const QString& fullPath);
+    bool carregarMapChaveTac(std::map<QString, QString>& mapChaveTac, const QDir& dirRawdataBruto);
+    solucao validarCabecalhoSolucao(const QStringList &strCsv);
+
 
 private:
 

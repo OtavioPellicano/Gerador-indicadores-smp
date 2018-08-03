@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QTest>
+#include <QFileDialog>
 #include "recuperaruf.h"
 
 namespace Ui {
@@ -24,9 +25,12 @@ private slots:
 
     void on_pushButton_recuperar_uf_clicked();
 
+    void on_pushButton_buscar_clicked();
+
 private:
     Ui::RecuperarUfDialog *ui;
     QDir mDirOrigem;
+    QDir mDirRawdataBruto;
 
     RecuperarUF* mRecUF;
 };

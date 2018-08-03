@@ -11,7 +11,7 @@ RecuperarUfDialog::RecuperarUfDialog(const QDir &dirOrigem, QWidget *parent) :
     ui->lineEdit_diretorio_rawdata_bruto->setEnabled(false);
     ui->pushButton_buscar->setEnabled(false);
 
-    ui->checkBox_4g->setEnabled(false);
+//    ui->checkBox_4g->setEnabled(false);
 }
 
 RecuperarUfDialog::~RecuperarUfDialog()
@@ -40,6 +40,12 @@ void RecuperarUfDialog::on_pushButton_recuperar_uf_clicked()
         return;
     }
 
+    if(ui->lineEdit_diretorio_rawdata_bruto->text().isEmpty() && ui->checkBox_4g->isChecked())
+    {
+        QMessageBox::warning(this, tr("Recuperação de UF"), tr("Selecione o diretório do rawdata bruto (antes de passar pelo motor)"), QMessageBox::Ok);
+        return;
+    }
+
     QMessageBox msg(this);
     msg.setWindowTitle(tr("Recuperação de UF"));
     msg.setText("Recuperando  UF...");
@@ -55,6 +61,8 @@ void RecuperarUfDialog::on_pushButton_recuperar_uf_clicked()
 
     if(ui->checkBox_4g->isChecked())
     {
+        mRecUF->recuperar4G(mDirOrigem, mDirRawdataBruto);
+
         //Tenho que fazer para o 4G
     }
 
@@ -63,4 +71,22 @@ void RecuperarUfDialog::on_pushButton_recuperar_uf_clicked()
     QMessageBox::information(this, tr("Recuperação de UF"), QString("Medições com UF:\n3G Pré-processamento: %1\n3G Pós-processamento: %2").arg(mRecUF->totalMedRecupInicial3G()).arg(mRecUF->totalMedRecup3G()), QMessageBox::Ok);
 
     delete mRecUF;
+}
+
+void RecuperarUfDialog::on_pushButton_buscar_clicked()
+{
+    QFileDialog diretorioDialog(this);
+
+    diretorioDialog.setNameFilter(tr("Text files (*.csv)"));
+    diretorioDialog.setViewMode(QFileDialog::Detail);
+    QString path = diretorioDialog.getExistingDirectory(this, tr("Diretório de Origem"), "/home");
+
+    qDebug() << path;
+
+    if(path != "")
+    {
+        ui->lineEdit_diretorio_rawdata_bruto->setText(path);
+        mDirRawdataBruto.cd(ui->lineEdit_diretorio_rawdata_bruto->text());
+    }
+
 }
