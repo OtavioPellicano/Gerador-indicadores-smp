@@ -90,18 +90,48 @@ bool RecuperarUF::recuperar3G(const QDir &dirOrigem)
 
     }
 
+    mVecHistSalvamento.clear();
     return true;
 
 }
 
 bool RecuperarUF::recuperar4G(const QDir &dirOrigem, const QDir &dirRawdataBruto)
 {
-    std::map<QString, QString> mapChaveTac;
+    std::map<QString, QString> mapChaveTacOuUF;
 
-//    if(!carregarMapChaveTac(mapChaveTac, dirRawdataBruto))
-//    {
-//        return false;
-//    }
+    if(!carregarMapChaveTacOuUF(mapChaveTacOuUF, dirRawdataBruto))
+    {
+        qDebug() << "Erro ao carregar o mapChaveTacOuUF";
+        return false;
+    }
+
+
+    if(this->mTipoSolucao == AXIROS)
+    {
+        //recuperar Axiros
+        if(!recuperar4GAxiros(dirOrigem, mapChaveTacOuUF))
+        {
+            qDebug() << "Erro ao recuperar TAC Axiros";
+            return false;
+        }
+
+    }
+    else if(this->mTipoSolucao == NETMETRIC)
+    {
+        //recuperar NETMETRIC
+        if(!recuperar4GNetmetric(dirOrigem, mapChaveTacOuUF))
+        {
+            qDebug() << "Erro ao recuperar location Netmetric";
+            return false;
+        }
+    }
+    else
+    {
+        qDebug() << "Erro ao escolher solucao";
+        return false;
+    }
+
+
 
     return true;
 }
@@ -143,14 +173,12 @@ bool RecuperarUF::descarregarMedicoes(std::vector<QString> &vecMed, const QStrin
 
 }
 
-bool RecuperarUF::carregarMapChaveTac(std::map<QString, QString> &mapChaveTac, const QDir &dirRawdataBruto)
+bool RecuperarUF::carregarMapChaveTacOuUF(std::map<QString, QString> &mapChaveTacOuUF, const QDir &dirRawdataBruto)
 {
     QStringList strCsv;
+    solucao tipoSolucao;
     std::string str;
-    QString deviceId;//[0] => split("-")[1]
-    QString dateTime;//[1] => mid(0, 19)
-    QString tac;//[18]
-    int colDeviceId, colDateTime, colTac;
+    size_t qntTipoSolucao = 0;
 
     QStringList arqs = dirRawdataBruto.entryList(QStringList("*.csv"));
 
@@ -168,31 +196,32 @@ bool RecuperarUF::carregarMapChaveTac(std::map<QString, QString> &mapChaveTac, c
 
                 if(i == 0)
                 {
+                    tipoSolucao = validarCabecalhoSolucao(strCsv);
 
-                    switch (validarCabecalhoSolucao(strCsv)) {
-                    case AXIROS:
-
-                        colDeviceId = 0;
-                        colDateTime = 1;
-                        colTac = 18;
-
-                        break;
-                    case NETMETRIC:
-
-                        qDebug() << "NETMETRIC não está implementada!";
-                        return false;
-                        break;
-                    default:
-                        qDebug() << "Rawdata bruto não identificado: " << *itQStr;
-                        return false;
-                        break;
+                    if(this->mTipoSolucao != tipoSolucao)
+                    {
+                        if(++qntTipoSolucao > 1)
+                        {
+                            qDebug() << "Mais de uma solucao!";
+                            return false;
+                        }
+                        this->mTipoSolucao = tipoSolucao;
                     }
 
                 }
 
-                deviceId = strCsv[colDeviceId];
-                dateTime = strCsv[colDateTime];
-                tac = strCsv[colTac];
+                switch (tipoSolucao) {
+                case AXIROS:
+                    carregarMapChaveTac(arq, mapChaveTacOuUF);
+                    break;
+                case NETMETRIC:
+                    carregarMapChaveUF(arq, mapChaveTacOuUF);
+                    break;
+                default:
+                    qDebug() << "Rawdata bruto não identificado: " << *itQStr;
+                    return false;
+                    break;
+                }
 
             }
             arq.close();
@@ -228,6 +257,265 @@ RecuperarUF::solucao RecuperarUF::validarCabecalhoSolucao(const QStringList& str
     }
 }
 
+bool RecuperarUF::carregarMapChaveTac(ifstream &arq, std::map<QString, QString> &mapChaveTac)
+{
+    std::string str;
+    QString deviceId;//[0] => split("-")[1]
+    QString dateTime;//[1] => mid(0, 19)
+    QString tac;//[18]
+    QString chave;
+    QStringList strCsv;
+
+    while(std::getline(arq, str))
+    {
+        strCsv = QString::fromStdString(str).split(";");
+
+        deviceId = strCsv[0].split("-")[1];
+        dateTime = strCsv[1].mid(0,19);
+        tac = strCsv[18];
+        chave = deviceId % dateTime;
+
+        if(tac.size() == 5)
+        {
+            try {
+                mapChaveTac[chave] = tac;
+            } catch (...) {
+                qDebug() << "Erro ao carregar o mapChaveTac";
+                return false;
+            }
+        }
+
+    }
+
+    return true;
+}
+
+bool RecuperarUF::carregarMapChaveUF(ifstream &arq, std::map<QString, QString> &mapChaveUF)
+{
+    std::string str;
+    QString deviceId;//[0]
+    QString dateTime;//[16]
+    QString location;//[3]
+    QString chave;
+    QStringList strCsv;
+
+    while(std::getline(arq, str))
+    {
+        strCsv = QString::fromStdString(str).split((";"));
+
+        deviceId = strCsv[0];
+        dateTime = strCsv[16];
+        location = strCsv[3];
+        chave = deviceId % dateTime;
+
+        if(!location.isEmpty())
+        {
+            try {
+                mapChaveUF[chave] = location;
+             } catch (...) {
+                qDebug() << "Erro ao carregar o mapChaveUF";
+                return false;
+            }
+        }
+
+    }
+
+    return true;
+}
+
+bool RecuperarUF::recuperar4GAxiros(const QDir &dirOrigem, std::map<QString, QString> &mapChaveTac)
+{
+    QStringList arqs = dirOrigem.entryList(QStringList("*.csv"));
+    std::string str;
+    QStringList strCsv;
+    QString ecgi;/*55*/
+    QString tac;
+    QString uf;/*0*/
+    QString wanMode;/*22*/
+    QString deviceId;//3
+    QString dateTime;//17
+    QString chave;
+
+
+    ifstream arq;
+    std::vector<QString> vecSaida;
+
+    for(auto itQStr = arqs.begin(); itQStr != arqs.end(); ++itQStr)
+    {
+        arq.open(dirOrigem.absoluteFilePath(*itQStr).toStdString());
+
+        if(arq.is_open())
+        {
+            while(std::getline(arq, str))
+            {
+                strCsv = QString::fromStdString(str).split(";");
+
+                wanMode = strCsv[22];
+                uf = strCsv[0];
+
+                if(wanMode == "4G")
+                {
+                    ++mTotalMed4G;
+                    if(uf.isEmpty())
+                    {
+                        ++mTotalMedUfBranco4G;
+                        if(!strCsv[3].isEmpty())
+                        {
+                            deviceId = strCsv[3].split("-")[1];
+                            dateTime = strCsv[17];
+                            chave = deviceId % dateTime;
+                            ecgi = strCsv[55];
+
+                            auto itTac = mapChaveTac.find(chave);
+                            if(itTac != mapChaveTac.end())
+                            {
+                                tac = itTac->second;
+                                mapChaveTac.erase(itTac);
+
+                                opmm::IdentificacaoDaUf identUf;
+                                identUf.setup(ecgi.toStdString(), tac.toStdString(), opmm::TAC);
+                                uf = QString::fromStdString(identUf.uf());
+
+                                if(uf == "$PI$")
+                                {
+                                    ++mTotalMedSemRecupUf4G;
+                                    uf = "";
+                                }
+
+                                strCsv[0] = uf;
+
+
+                            }
+                            else
+                            {
+                                ++mTotalMedSemRecupUf4G;
+                            }
+
+                        }
+                        else
+                        {
+                            ++mTotalMedSemRecupUf4G;
+                        }
+                    }
+                }
+
+
+                try {
+                    vecSaida.push_back(strCsv.join(";"));
+                } catch (...) {
+                    descarregarMedicoes(vecSaida, *itQStr);
+                    vecSaida.push_back(strCsv.join(";"));
+                }
+
+            }
+            arq.close();
+
+            if(!vecSaida.empty())
+            {
+                descarregarMedicoes(vecSaida, *itQStr);
+            }
+        }
+        else
+        {
+            qDebug() << "Erro ao abrir: " << *itQStr;
+            return false;
+        }
+    }
+
+
+    return true;
+
+}
+
+bool RecuperarUF::recuperar4GNetmetric(const QDir &dirOrigem, std::map<QString, QString> &mapChaveUF)
+{
+    QStringList arqs = dirOrigem.entryList(QStringList("*.csv"));
+    std::string str;
+    QStringList strCsv;
+    QString ecgi;/*55*/
+    QString uf;/*0*/
+    QString wanMode;/*22*/
+    QString deviceId;//3
+    QString dateTime;//17
+    QString chave;
+
+
+    ifstream arq;
+    std::vector<QString> vecSaida;
+
+    for(auto itQStr = arqs.begin(); itQStr != arqs.end(); ++itQStr)
+    {
+        arq.open(dirOrigem.absoluteFilePath(*itQStr).toStdString());
+
+        if(arq.is_open())
+        {
+            while(std::getline(arq, str))
+            {
+                strCsv = QString::fromStdString(str).split(";");
+
+                wanMode = strCsv[22];
+                uf = strCsv[0];
+
+                if(wanMode == "4G")
+                {
+                    ++mTotalMed4G;
+                    if(uf.isEmpty())
+                    {
+                        ++mTotalMedUfBranco4G;
+                        if(!strCsv[3].isEmpty())
+                        {
+//                            deviceId = strCsv[3].split("-")[1];
+                            deviceId = strCsv[3];   //Enquanto a alteração do codigo da prestadora não estiver ativo
+                            dateTime = strCsv[17];
+                            chave = deviceId % dateTime;
+                            ecgi = strCsv[55];
+
+                            auto itUf = mapChaveUF.find(chave);
+                            if(itUf != mapChaveUF.end())
+                            {
+                                uf = itUf->second;
+                                mapChaveUF.erase(itUf);
+                                strCsv[0] = uf;
+                            }
+                            else
+                            {
+                                ++mTotalMedSemRecupUf4G;
+                            }
+
+                        }
+                        else
+                        {
+                            ++mTotalMedSemRecupUf4G;
+                        }
+                    }
+                }
+
+
+                try {
+                    vecSaida.push_back(strCsv.join(";"));
+                } catch (...) {
+                    descarregarMedicoes(vecSaida, *itQStr);
+                    vecSaida.push_back(strCsv.join(";"));
+                }
+
+            }
+            arq.close();
+
+            if(!vecSaida.empty())
+            {
+                descarregarMedicoes(vecSaida, *itQStr);
+            }
+        }
+        else
+        {
+            qDebug() << "Erro ao abrir: " << *itQStr;
+            return false;
+        }
+    }
+
+    return true;
+}
+
 QString RecuperarUF::totalMedRecup3G() const
 {
     return QString("%1%").arg((float(mTotalMed3G - mTotalMedSemRecupUf3G)/float(mTotalMed3G))*100.0);
@@ -236,5 +524,15 @@ QString RecuperarUF::totalMedRecup3G() const
 QString RecuperarUF::totalMedRecupInicial3G() const
 {
     return QString("%1%").arg((float(mTotalMed3G - mTotalMedUfBranco3G)/float(mTotalMed3G))*100.0);
+}
+
+QString RecuperarUF::totalMedRecup4G() const
+{
+    return QString("%1%").arg((float(mTotalMed4G - mTotalMedSemRecupUf4G)/float(mTotalMed4G))*100.0);
+}
+
+QString RecuperarUF::totalMedRecupInicial4G() const
+{
+    return QString("%1%").arg((float(mTotalMed4G - mTotalMedUfBranco4G)/float(mTotalMed4G))*100.0);
 }
 

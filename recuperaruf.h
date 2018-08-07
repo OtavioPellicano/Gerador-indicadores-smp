@@ -22,10 +22,17 @@ public:
     QString totalMedRecup3G() const;
     QString totalMedRecupInicial3G() const;
 
+    QString totalMedRecup4G() const;
+    QString totalMedRecupInicial4G() const;
+
 private:
     bool descarregarMedicoes(std::vector<QString>& vecMed, const QString& fullPath);
-    bool carregarMapChaveTac(std::map<QString, QString>& mapChaveTac, const QDir& dirRawdataBruto);
+    bool carregarMapChaveTacOuUF(std::map<QString, QString>& mapChaveTacOuUF, const QDir& dirRawdataBruto);
     solucao validarCabecalhoSolucao(const QStringList &strCsv);
+    bool carregarMapChaveTac(std::ifstream& arq, std::map<QString, QString>& mapChaveTac);
+    bool carregarMapChaveUF(std::ifstream& arq, std::map<QString, QString>& mapChaveUF);
+    bool recuperar4GAxiros(const QDir& dirOrigem, std::map<QString, QString> &mapChaveTac);
+    bool recuperar4GNetmetric(const QDir& dirOrigem, std::map<QString, QString> &mapChaveUF);
 
 
 private:
@@ -39,6 +46,12 @@ private:
     long mTotalMed3G = 0;
     long mTotalMedSemRecupUf3G = 0;
     long mTotalMedUfBranco3G = 0;
+
+    long mTotalMed4G = 0;
+    long mTotalMedSemRecupUf4G = 0;
+    long mTotalMedUfBranco4G = 0;
+
+    solucao mTipoSolucao;
 
 };
 
