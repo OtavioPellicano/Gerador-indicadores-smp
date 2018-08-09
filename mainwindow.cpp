@@ -432,7 +432,7 @@ void MainWindow::on_actionBase_CGI_triggered()
 
         delete mBaseCGI;
 
+        QMessageBox::information(this, tr("Importação Base CGI"), tr("Importação concluída!"), QMessageBox::Ok);
     }
 
-    QMessageBox::information(this, tr("Importação Base CGI"), tr("Importação concluída!"), QMessageBox::Ok);
 }
