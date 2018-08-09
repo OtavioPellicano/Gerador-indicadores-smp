@@ -353,7 +353,7 @@ void MainWindow::on_actionRecuperar_Velocidade_Contratada_triggered()
     msg.setText("Recuperando Velocidade Contratada...");
     msg.setStandardButtons(0);  //removendo todos os botões
     msg.show();
-    QTest::qWait(1);    //Esperando a janela abrir
+    QTest::qWait(5);    //Esperando a janela abrir
 
     mRecVelCont = new RecuperarVelocidadeContratada(QDir(ui->lineEdit_diretorio_origem->text()));
 
@@ -387,4 +387,52 @@ void MainWindow::on_actionRecuperar_UF_triggered()
 
     delete mRecUf;
 
+}
+
+void MainWindow::on_actionBase_CGI_triggered()
+{
+    QFileDialog fileFullBaseCgi;
+    QString fileNameCgi;
+
+    fileNameCgi = fileFullBaseCgi.getOpenFileName(this, "Base CGI");
+
+    if(fileNameCgi != "")
+    {
+        mBaseCGI = new BaseCGI;
+        if(!mBaseCGI->fileDialogBaseCGI(fileNameCgi))
+        {
+            QMessageBox::critical(this, tr("Importação Base CGI"), tr("Arquivo inválido!"), QMessageBox::Ok);
+            delete mBaseCGI;
+            return;
+        }
+
+        QMessageBox msg(this);
+        msg.setWindowTitle(tr("Importação Base CGI"));
+        msg.setText("Importando Base CGI...");
+        msg.setStandardButtons(0);  //removendo todos os botões
+        msg.show();
+        QTest::qWait(5);    //Esperando a janela abrir
+
+        if(!mBaseCGI->carregarBaseCgi(fileNameCgi))
+        {
+            QMessageBox::critical(this, tr("Importação Base CGI"), tr("Erro ao carregar a Base CGI!"), QMessageBox::Ok);
+            delete mBaseCGI;
+            return;
+
+        }
+
+
+        if(!mBaseCGI->salvarBaseCgi())
+        {
+            QMessageBox::critical(this, tr("Importação Base CGI"), tr("Erro ao carregar a Base CGI!"), QMessageBox::Ok);
+            delete mBaseCGI;
+            return;
+
+        }
+
+        delete mBaseCGI;
+
+    }
+
+    QMessageBox::information(this, tr("Importação Base CGI"), tr("Importação concluída!"), QMessageBox::Ok);
 }

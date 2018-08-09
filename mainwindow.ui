@@ -56,6 +56,7 @@
     </property>
     <addaction name="actionPlano_Amostral"/>
     <addaction name="actionRegras_de_Descarte"/>
+    <addaction name="actionBase_CGI"/>
    </widget>
    <widget class="QMenu" name="menuAjuda">
     <property name="title">
@@ -174,6 +175,11 @@
   <action name="actionRecuperar_Velocidade_Contratada">
    <property name="text">
     <string>Recuperar Velocidade Contratada</string>
+   </property>
+  </action>
+  <action name="actionBase_CGI">
+   <property name="text">
+    <string>Base CGI</string>
    </property>
   </action>
  </widget>

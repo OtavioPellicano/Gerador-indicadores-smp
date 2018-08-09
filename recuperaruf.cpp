@@ -7,6 +7,9 @@ RecuperarUF::RecuperarUF()
 
 bool RecuperarUF::recuperar3G(const QDir &dirOrigem)
 {
+
+    BaseCGI baseCgi;
+    baseCgi.carregarMapCgiUf();
     QString cgi;/*55*/
     QString lac;
     QString uf;/*0*/
@@ -46,7 +49,8 @@ bool RecuperarUF::recuperar3G(const QDir &dirOrigem)
                             lac = cgi.mid(5,5);
 
                             opmm::IdentificacaoDaUf identUf;
-                            identUf.setup(cgi.toStdString(), lac.toStdString(), opmm::LAC);
+
+                            identUf.setup(cgi.toStdString(), lac.toStdString(), opmm::LAC, opmm::TAC_LAC, baseCgi.unMapCgiUf());
                             uf = QString::fromStdString(identUf.uf());
 
                             if(uf == "$PI$")
@@ -118,6 +122,7 @@ bool RecuperarUF::recuperar4G(const QDir &dirOrigem, const QDir &dirRawdataBruto
     }
     else if(this->mTipoSolucao == NETMETRIC)
     {
+        qDebug() << "Tendo recuperar 4G VIVO";
         //recuperar NETMETRIC
         if(!recuperar4GNetmetric(dirOrigem, mapChaveTacOuUF))
         {
@@ -132,6 +137,7 @@ bool RecuperarUF::recuperar4G(const QDir &dirOrigem, const QDir &dirRawdataBruto
     }
 
 
+    qDebug() << "Recuperou 4G";
 
     return true;
 }
@@ -203,6 +209,7 @@ bool RecuperarUF::carregarMapChaveTacOuUF(std::map<QString, QString> &mapChaveTa
                         if(++qntTipoSolucao > 1)
                         {
                             qDebug() << "Mais de uma solucao!";
+                            arq.close();
                             return false;
                         }
                         this->mTipoSolucao = tipoSolucao;
@@ -234,11 +241,18 @@ bool RecuperarUF::carregarMapChaveTacOuUF(std::map<QString, QString> &mapChaveTa
 
     }
 
+    qDebug() << "Carregou chave tac UF";
+
     return true;
 }
 
 RecuperarUF::solucao RecuperarUF::validarCabecalhoSolucao(const QStringList& strCsv)
 {
+
+    //Para arquivos vazios
+    if(strCsv.size() < 19)
+        return NONE;
+
     if(strCsv[0] == "deviceid"
             && strCsv[1] == "timestamp"
             && strCsv[18] == "tac")
@@ -296,6 +310,8 @@ bool RecuperarUF::carregarMapChaveUF(ifstream &arq, std::map<QString, QString> &
     QString deviceId;//[0]
     QString dateTime;//[16]
     QString location;//[3]
+    QString speedUp;//[39]
+    QString speedDown;//[40]
     QString chave;
     QStringList strCsv;
 
@@ -303,18 +319,32 @@ bool RecuperarUF::carregarMapChaveUF(ifstream &arq, std::map<QString, QString> &
     {
         strCsv = QString::fromStdString(str).split((";"));
 
+        if(strCsv.size() < 41)
+            continue;
+
         deviceId = strCsv[0];
         dateTime = strCsv[16];
         location = strCsv[3];
         chave = deviceId % dateTime;
 
+        speedUp = strCsv[39];
+        speedDown = strCsv[40];
+
+        if(speedDown.isEmpty() && speedUp.isEmpty())
+            continue;
+
         if(!location.isEmpty())
         {
-            try {
-                mapChaveUF[chave] = location;
-             } catch (...) {
-                qDebug() << "Erro ao carregar o mapChaveUF";
-                return false;
+            if(!deviceId.isEmpty() && !dateTime.isEmpty())
+            {
+                try {
+    //                mapChaveUF[chave] = location;
+                    mapChaveUF.insert({chave, location});
+                 } catch (...) {
+                    qDebug() << "Erro ao carregar o mapChaveUF";
+                    return false;
+                }
+
             }
         }
 
@@ -336,6 +366,9 @@ bool RecuperarUF::recuperar4GAxiros(const QDir &dirOrigem, std::map<QString, QSt
     QString dateTime;//17
     QString chave;
 
+    mTotalMed4G = 0;
+    mTotalMedSemRecupUf4G = 0;
+    mTotalMedUfBranco4G = 0;
 
     ifstream arq;
     std::vector<QString> vecSaida;
@@ -403,7 +436,7 @@ bool RecuperarUF::recuperar4GAxiros(const QDir &dirOrigem, std::map<QString, QSt
                 try {
                     vecSaida.push_back(strCsv.join(";"));
                 } catch (...) {
-                    descarregarMedicoes(vecSaida, *itQStr);
+                    descarregarMedicoes(vecSaida, dirOrigem.absoluteFilePath(*itQStr));
                     vecSaida.push_back(strCsv.join(";"));
                 }
 
@@ -412,7 +445,7 @@ bool RecuperarUF::recuperar4GAxiros(const QDir &dirOrigem, std::map<QString, QSt
 
             if(!vecSaida.empty())
             {
-                descarregarMedicoes(vecSaida, *itQStr);
+                descarregarMedicoes(vecSaida, dirOrigem.absoluteFilePath(*itQStr));
             }
         }
         else
@@ -494,7 +527,7 @@ bool RecuperarUF::recuperar4GNetmetric(const QDir &dirOrigem, std::map<QString, 
                 try {
                     vecSaida.push_back(strCsv.join(";"));
                 } catch (...) {
-                    descarregarMedicoes(vecSaida, *itQStr);
+                    descarregarMedicoes(vecSaida, dirOrigem.absoluteFilePath(*itQStr));
                     vecSaida.push_back(strCsv.join(";"));
                 }
 
@@ -503,7 +536,7 @@ bool RecuperarUF::recuperar4GNetmetric(const QDir &dirOrigem, std::map<QString, 
 
             if(!vecSaida.empty())
             {
-                descarregarMedicoes(vecSaida, *itQStr);
+                descarregarMedicoes(vecSaida, dirOrigem.absoluteFilePath(*itQStr));
             }
         }
         else
@@ -534,5 +567,29 @@ QString RecuperarUF::totalMedRecup4G() const
 QString RecuperarUF::totalMedRecupInicial4G() const
 {
     return QString("%1%").arg((float(mTotalMed4G - mTotalMedUfBranco4G)/float(mTotalMed4G))*100.0);
+}
+
+QString RecuperarUF::totalMedRecup3Ge4G() const
+{
+    float numerador;
+    float denominador;
+
+    numerador = float(mTotalMed3G - mTotalMedSemRecupUf3G) + float(mTotalMed4G - mTotalMedSemRecupUf4G);
+    denominador = float(mTotalMed3G) + float(mTotalMed4G);
+
+    return QString("%1%").arg((numerador/denominador)*100.0);
+
+}
+
+QString RecuperarUF::totalMedRecupInicial3Ge4G() const
+{
+    float numerador;
+    float denominador;
+
+    numerador = float(mTotalMed3G - mTotalMedUfBranco3G) + float(mTotalMed4G - mTotalMedUfBranco4G);
+    denominador = float(mTotalMed3G) + float(mTotalMed4G);
+
+    return QString("%1%").arg((numerador/denominador)*100.0);
+
 }
 

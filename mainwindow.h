@@ -12,11 +12,15 @@
 #include <QStringList>
 #include <algorithm>
 #include <QTest>
+#include <unordered_map>
 #include "detalheindicador.h"
 #include "planoamostral.h"
 #include "regrasdescarte.h"
 #include "recuperarvelocidadecontratada.h"
 #include "recuperarufdialog.h"
+#include "basecgi.h"
+
+typedef std::unordered_map<std::string, std::string> uMapStr;
 
 namespace Ui {
 class MainWindow;
@@ -61,6 +65,8 @@ private slots:
 
     void on_actionRecuperar_UF_triggered();
 
+    void on_actionBase_CGI_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -78,6 +84,10 @@ private:
     RecuperarVelocidadeContratada* mRecVelCont;
 
     RecuperarUfDialog* mRecUf;
+
+    BaseCGI* mBaseCGI;
+
+    uMapStr* unMapCgiUf;
 
 };
 

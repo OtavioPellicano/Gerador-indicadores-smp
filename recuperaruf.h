@@ -8,6 +8,7 @@
 #include <vector>
 #include "IdentificacaoDaUf.h"
 #include <algorithm>
+#include "basecgi.h"
 
 class RecuperarUF
 {
@@ -24,6 +25,9 @@ public:
 
     QString totalMedRecup4G() const;
     QString totalMedRecupInicial4G() const;
+
+    QString totalMedRecup3Ge4G() const;
+    QString totalMedRecupInicial3Ge4G() const;
 
 private:
     bool descarregarMedicoes(std::vector<QString>& vecMed, const QString& fullPath);

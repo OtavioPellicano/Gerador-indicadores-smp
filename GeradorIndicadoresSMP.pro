@@ -36,7 +36,8 @@ SOURCES += \
     validade.cpp \
     recuperaruf.cpp \
     recuperarvelocidadecontratada.cpp \
-    recuperarufdialog.cpp
+    recuperarufdialog.cpp \
+    basecgi.cpp
 
 HEADERS += \
     Medicao.h \
@@ -49,7 +50,8 @@ HEADERS += \
     validade.h \
     recuperaruf.h \
     recuperarvelocidadecontratada.h \
-    recuperarufdialog.h
+    recuperarufdialog.h \
+    basecgi.h
 
 FORMS += \
     detalheindicador.ui \

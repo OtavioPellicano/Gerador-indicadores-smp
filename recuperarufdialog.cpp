@@ -69,7 +69,8 @@ void RecuperarUfDialog::on_pushButton_recuperar_uf_clicked()
 
     msg.close();
     QMessageBox::information(this, tr("Recuperação de UF"), QString("Medições com UF:\n3G Pré-processamento: %1\n3G Pós-processamento: %2"
-                                                                    "\n4G Pré-processamento: %3\n4G Pós-processamento: %4").arg(mRecUF->totalMedRecupInicial3G()).arg(mRecUF->totalMedRecup3G()).arg(mRecUF->totalMedRecupInicial4G()).arg(mRecUF->totalMedRecup4G()), QMessageBox::Ok);
+                                                                    "\n4G Pré-processamento: %3\n4G Pós-processamento: %4"
+                                                                    "\n3G + 4G Pré-processamento: %5\n3G + 4G Pós-processamento: %6").arg(mRecUF->totalMedRecupInicial3G()).arg(mRecUF->totalMedRecup3G()).arg(mRecUF->totalMedRecupInicial4G()).arg(mRecUF->totalMedRecup4G()).arg(mRecUF->totalMedRecupInicial3Ge4G()).arg(mRecUF->totalMedRecup3Ge4G()), QMessageBox::Ok);
 
     delete mRecUF;
 }
