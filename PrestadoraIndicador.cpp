@@ -27,13 +27,15 @@ void PrestadoraIndicador::setTipo(const tipoPrestadora &tipo)
     mTipo = tipo;
 }
 
-void PrestadoraIndicador::gerarMetaSmp(map<QString, map<QString, vector<tuple<bool, bool, double, double> > > > &mapUfMeta, const map<QString, map<QString, set<QString, less<QString> > > > &mapUfMedicao)
+void PrestadoraIndicador::gerarMetaSmp(map<QString, map<QString, vector<tuple<bool, bool, double, double> > > > &mapUfMeta, const map<QString, map<QString, set<QString, less<QString> > > > &mapUfMedicao, map<QString, map<QString, map<QString, size_t> > >& /*mMapUfWanColetorMedicao*/)
 {
     double down, up, downStream, upStream;
     size_t cont;
     QString uf, wanMode;
 
     pair<vector<double>, vector<double>> pairVecDownUp;
+//    vector<QString> vecColetor;
+//    vecColetor.reserve(7);
 
     pairVecDownUp.first.reserve(7);
     pairVecDownUp.second.reserve(7);
@@ -57,6 +59,7 @@ void PrestadoraIndicador::gerarMetaSmp(map<QString, map<QString, vector<tuple<bo
                 down = strCsv[2].toDouble();
                 up = strCsv[3].toDouble();
 
+//                vecColetor.push_back(strCsv[1]);
                 pairVecDownUp.first.push_back(down);
                 pairVecDownUp.second.push_back(up);
 
@@ -70,12 +73,21 @@ void PrestadoraIndicador::gerarMetaSmp(map<QString, map<QString, vector<tuple<bo
                     {
                         mapUfMeta[uf][wanMode].push_back(tuple<bool, bool, double, double>(meta(down, downStream), meta(up, upStream),
                                                                                            down/downStream, up/upStream));
+
+                        //carregando o map de quantidade de coletores e mediçoes validas
+//                        for(auto itVecCol = vecColetor.begin(); itVecCol != vecColetor.end(); ++itVecCol)
+//                        {
+//                            ++mMapUfWanColetorMedicao[uf][wanMode][*itVecCol];
+//                        }
+
                     }
 
                     pairVecDownUp.first.clear();
                     pairVecDownUp.first.reserve(7);
                     pairVecDownUp.second.clear();
                     pairVecDownUp.second.reserve(7);
+//                    vecColetor.clear();
+//                    vecColetor.reserve(7);
                 }
             }
         }
@@ -111,6 +123,35 @@ void PrestadoraIndicador::gerarColetoresMedicoesPorUf(map<QString, map<QString, 
 
         mapUfErro[uf]["3G"] = erroEstatistico(setColetores.size());
         mapUfErro[uf]["4G"] = erroEstatistico(setColetores.size());
+
+    }
+}
+
+void PrestadoraIndicador::gerarColetoresMedicoesErroPorUf(map<QString, map<QString, size_t> > &mapUfQntColetor, map<QString, map<QString, size_t> > &mapUfQntMedicao, map<QString, map<QString, double> > &mapUfErro, const map<QString, map<QString, map<QString, size_t> > > &mMapUfWanColetorMedicao)
+{
+    QString uf;
+    QString wanMode;
+    set<QString> sColetor;
+    for(auto itMap1 = mMapUfWanColetorMedicao.begin(); itMap1 != mMapUfWanColetorMedicao.end(); ++itMap1)
+    {
+        uf = itMap1->first;
+        sColetor.clear();
+        for(auto itMap2 = itMap1->second.begin(); itMap2 != itMap1->second.end(); ++itMap2)
+        {
+            wanMode = itMap2->first;
+
+            for(auto itMap3 = itMap2->second.begin(); itMap3 != itMap2->second.end(); ++itMap3)
+            {
+                sColetor.insert(itMap3->first);
+                mapUfQntMedicao[uf][wanMode] += itMap3->second;
+            }
+        }
+
+        mapUfQntColetor[uf]["3G"] = sColetor.size();
+        mapUfQntColetor[uf]["4G"] = sColetor.size();
+
+        mapUfErro[uf]["3G"] = erroEstatistico(sColetor.size());
+        mapUfErro[uf]["4G"] = erroEstatistico(sColetor.size());
 
     }
 }
@@ -227,7 +268,7 @@ double PrestadoraIndicador::mediana(vector<double> &meds)
 
     if(tam%2 == 0)
     {
-        if(tam == 2 )
+        if(tam == 2)
             return (meds[0] + meds[1])/2;
         return (meds[tam/2] + meds[tam/2 - 1])/2;
     }
@@ -235,6 +276,47 @@ double PrestadoraIndicador::mediana(vector<double> &meds)
     {
         return meds[tam/2];
     }
+
+}
+
+double PrestadoraIndicador::mediana(vector<double> &meds, size_t pos[])
+{
+    size_t tam = meds.size();
+
+    std::map<size_t, double> mapPosMeds;
+    for(size_t i = 0; i < meds.size(); ++i)
+    {
+        mapPosMeds[i] = meds[i];
+    }
+
+    std::map<double, size_t> mapMedsPos;
+    for(auto itMap = mapPosMeds.begin(); itMap != mapPosMeds.end(); ++itMap)
+    {
+        mapMedsPos.insert({itMap->second, itMap->first});
+    }
+
+    if(tam%2 == 0)
+    {
+        if(tam == 2)
+        {
+            pos[0] = 0;
+            pos[1] = 1;
+            return (mapPosMeds[pos[0]] + mapPosMeds[pos[1]])/2;
+        }
+
+        pos[0] = mapMedsPos[tam/2];
+        pos[1] = mapMedsPos[tam/2 - 1];
+
+        return (mapPosMeds[*pos] + mapPosMeds[pos[1]])/2;
+    }
+    else
+    {
+        pos[0] = mapMedsPos[tam/2];
+        pos[1] = pos[0];
+        return mapPosMeds[*pos];
+    }
+
+
 
 }
 
@@ -268,13 +350,13 @@ vector<QString> PrestadoraIndicador::informacaoEstruturada()
 
     QString uf, wanMode;
     QString indice_39, indice_40, indice_41, indice_42;
-    QString smp_4, smp_5_down, smp_5_up;
+    QString smp_10, smp_11_down, smp_11_up;
     QString qntColetores, qntMedicoes;
     QString erro;
     QString prestadora = this->nomePrestadora();
     QString tipo = (this->mTipo == SMP ? "SMP" : "SCM");
     QString dado;
-    char flag_val_op, flag_val_es, flag_meta_4, flag_meta_5_down, flag_meta_5_up;
+    char flag_val_op, flag_val_es, flag_meta_10, flag_meta_11_down, flag_meta_11_up;
     QString flag_res;
 
     for(auto itMap1 = mapUfIndicadorSmp.begin(); itMap1 != mapUfIndicadorSmp.end(); ++itMap1)
@@ -289,9 +371,9 @@ vector<QString> PrestadoraIndicador::informacaoEstruturada()
             indice_41 = QString::number(std::get<2>(mapUfIndiceSmp[uf][wanMode]));
             indice_42 = QString::number(std::get<3>(mapUfIndiceSmp[uf][wanMode]));
 
-            smp_4 = QString::number(std::get<0>(itMap2->second));
-            smp_5_down = QString::number(std::get<1>(itMap2->second));
-            smp_5_up = QString::number(std::get<2>(itMap2->second));
+            smp_10 = QString::number(std::get<0>(itMap2->second));
+            smp_11_down = QString::number(std::get<1>(itMap2->second));
+            smp_11_up = QString::number(std::get<2>(itMap2->second));
 
             qntColetores = QString::number(mapUfQntColetor[uf][wanMode]);
             qntMedicoes = QString::number(mapUfQntMedicao[uf][wanMode]);
@@ -318,29 +400,29 @@ vector<QString> PrestadoraIndicador::informacaoEstruturada()
 
             if(std::get<0>(itMap2->second) >= .95)
             {
-                flag_meta_4 = 1;
+                flag_meta_10 = 1;
             }
             else
             {
-                flag_meta_4 = 0;
+                flag_meta_10 = 0;
             }
 
             if(std::get<1>(itMap2->second) >= .8)
             {
-                flag_meta_5_down = 1;
+                flag_meta_11_down = 1;
             }
             else
             {
-                flag_meta_5_down = 0;
+                flag_meta_11_down = 0;
             }
 
             if(std::get<2>(itMap2->second) >= .8)
             {
-                flag_meta_5_up = 1;
+                flag_meta_11_up = 1;
             }
             else
             {
-                flag_meta_5_up = 0;
+                flag_meta_11_up = 0;
             }
 
             if(!flag_val_op)
@@ -361,8 +443,8 @@ vector<QString> PrestadoraIndicador::informacaoEstruturada()
 
             dado = prestadora % sep() % tipo % sep() % uf % sep() % wanMode % sep() % qntMedicoes % sep() %
                         qntColetores % sep() % indice_39 % sep() % indice_40 % sep() % indice_41 % sep() %
-                        indice_42 % sep() % smp_4 % sep() % smp_5_down % sep() % smp_5_up % sep() % erro % sep() %
-                        QString::number(flag_meta_4) % sep() % QString::number(flag_meta_5_down) % sep() % QString::number(flag_meta_5_up) % sep() %
+                        indice_42 % sep() % smp_10 % sep() % smp_11_down % sep() % smp_11_up % sep() % erro % sep() %
+                        QString::number(flag_meta_10) % sep() % QString::number(flag_meta_11_down) % sep() % QString::number(flag_meta_11_up) % sep() %
                         QString::number(flag_val_op) % sep() % QString::number(flag_val_es) % sep() % flag_res;
 
             vecSaida.push_back(dado);
@@ -397,6 +479,9 @@ void PrestadoraIndicador::clearAll()
 
     //map com indicador smp_4, smp_5_down, smp_5_up. indicador por UF!
     mMapUfIndicadorSmp.clear();
+
+    //map[uf][wanMode][coletor] = qnt
+    mMapUfWanColetorMedicao.clear();
 
 }
 
@@ -576,9 +661,11 @@ bool PrestadoraIndicador::salvarMedicoes(const QDir &dirOut)
  */
 vector<QString> PrestadoraIndicador::indicadores()
 {
-    gerarMetaSmp(this->mMapUfMeta, this->mMapUfMedicao);
+    gerarMetaSmp(this->mMapUfMeta, this->mMapUfMedicao, this->mMapUfWanColetorMedicao);
     gerarColetoresMedicoesPorUf(this->mMapUfQntColetor,this->mMapUfQntMedicao, this->mMapUfErro, this->mMapUfMedicao);
+//    gerarColetoresMedicoesErroPorUf(this->mMapUfQntColetor, this->mMapUfQntMedicao, this->mMapUfErro, this->mMapUfWanColetorMedicao);
     this->mMapUfMedicao.clear();
+    this->mMapUfWanColetorMedicao.clear();
 
     gerarIndiceSmp(this->mMapUfIndiceSmp, this->mMapUfMeta);
     this->mMapUfMeta.clear();

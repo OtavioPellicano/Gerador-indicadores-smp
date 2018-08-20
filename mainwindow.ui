@@ -73,9 +73,17 @@
     <addaction name="separator"/>
     <addaction name="actionProcessar"/>
    </widget>
+   <widget class="QMenu" name="menuRelat_rios">
+    <property name="title">
+     <string>Relatórios</string>
+    </property>
+    <addaction name="actionMedianas_Down"/>
+    <addaction name="actionMedianas_Up"/>
+   </widget>
    <addaction name="menuArquivo"/>
    <addaction name="menuConstruir"/>
    <addaction name="menuConfigura_es"/>
+   <addaction name="menuRelat_rios"/>
    <addaction name="menuAjuda"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -180,6 +188,16 @@
   <action name="actionBase_CGI">
    <property name="text">
     <string>Base CGI</string>
+   </property>
+  </action>
+  <action name="actionMedianas_Down">
+   <property name="text">
+    <string>Medianas Down</string>
+   </property>
+  </action>
+  <action name="actionMedianas_Up">
+   <property name="text">
+    <string>Medianas Up</string>
    </property>
   </action>
  </widget>

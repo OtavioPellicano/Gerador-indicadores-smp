@@ -22,6 +22,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionProcessar->setEnabled(false);
     ui->actionSalvar->setEnabled(false);
 
+    //Nao implementados
+    ui->actionMedianas_Down->setEnabled(false);
+    ui->actionMedianas_Up->setEnabled(false);
 
     connect(ui->tableWidget_processado, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(cellSelected(int,int)));
 

@@ -56,12 +56,18 @@ private:
     void setTipo(const tipoPrestadora &tipo);
 
     void gerarMetaSmp(map<QString, map<QString, vector<tuple<bool, bool, double, double>>>> &mapUfMeta,
-                       const map<QString, map<QString, set<QString, less<QString>>>> &mapUfMedicao);
+                       const map<QString, map<QString, set<QString, less<QString>>>> &mapUfMedicao,
+                          map<QString, map<QString, map<QString, size_t>>>& mMapUfWanColetorMedicao);
 
     void gerarColetoresMedicoesPorUf(map<QString, map<QString, size_t>> &mapUfColetor,
                              map<QString, map<QString, size_t>> &mapUfQntMedicao,
                              map<QString, map<QString, double>> &mapUfErro,
                              const map<QString, map<QString, set<QString, less<QString>>>> &mapUfMedicao);
+
+    void gerarColetoresMedicoesErroPorUf(map<QString, map<QString, size_t>> &mapUfQntColetor,
+                                         map<QString, map<QString, size_t>> &mapUfQntMedicao,
+                                         map<QString, map<QString, double>> &mapUfErro,
+                                         const map<QString, map<QString, map<QString, size_t>>>& mMapUfWanColetorMedicao);
 
     void gerarIndiceSmp(map<QString, map<QString, tuple<size_t, size_t, double, double> > > &mapUfIndiceSmp,
                         const map<QString, map<QString, vector<tuple<bool, bool, double, double>>>> &mapUfMeta);
@@ -76,6 +82,9 @@ private:
     bool meta(const double &mediana, const double &medianaStream);
 
     double mediana(vector<double> &meds);
+
+    double mediana(vector<double> &meds, size_t pos[]);
+
 
     double erroEstatistico(const size_t &n);
 
@@ -96,9 +105,14 @@ private:
     map<QString, map<QString, set<QString, less<QString>>>> mMapUfMedicao;
 
     //map quantidade de coletores por UF
+    //map[uf]["3G"] = coletores Unicos
     map<QString, map<QString, size_t>> mMapUfQntColetor;
 
+    //map[uf][wanMode][coletor] = qnt
+    map<QString, map<QString, map<QString, size_t>>> mMapUfWanColetorMedicao;
+
     //map quantidade de medicao por UF por wanmode
+    //map[uf][wanMode] = qnt de medicao
     map<QString, map<QString, size_t>> mMapUfQntMedicao;
 
     //map erro por uf
