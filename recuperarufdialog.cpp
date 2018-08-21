@@ -81,7 +81,7 @@ void RecuperarUfDialog::on_pushButton_buscar_clicked()
 
     diretorioDialog.setNameFilter(tr("Text files (*.csv)"));
     diretorioDialog.setViewMode(QFileDialog::Detail);
-    QString path = diretorioDialog.getExistingDirectory(this, tr("Diretório de Origem"), "/home");
+    QString path = diretorioDialog.getExistingDirectory(this, tr("Diretório de Origem"));
 
     qDebug() << path;
 

@@ -184,7 +184,7 @@ void MainWindow::on_actionBuscarDiretorio_triggered()
 
     diretorioDialog.setNameFilter(tr("Text files (*.csv)"));
     diretorioDialog.setViewMode(QFileDialog::Detail);
-    QString path = diretorioDialog.getExistingDirectory(this, tr("Diretório de Origem"), "/home");
+    QString path = diretorioDialog.getExistingDirectory(this, tr("Diretório de Origem"));
 
     qDebug() << path;
 
